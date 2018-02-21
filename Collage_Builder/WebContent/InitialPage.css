@@ -1,0 +1,13 @@
+body {
+    background-color: lightgrey;
+}
+input.inputTextForm{
+	border:1px solid black;
+}
+input.buildCollageButton{
+	color: white;
+	background-color: darkgrey;
+}
+.formdiv{
+	margin: auto;
+}
