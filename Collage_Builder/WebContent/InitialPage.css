@@ -8,6 +8,7 @@ input.buildCollageButton{
 	color: white;
 	background-color: darkgrey;
 }
-.formdiv{
+.formDiv{
 	margin: auto;
+    width: 50%;
 }
