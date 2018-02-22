@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?><project-modules id="moduleCoreId" project-version="1.5.0">
+    <wb-module deploy-name="310_Collage_Builder">
+        <wb-resource deploy-path="/" source-path="/WebContent" tag="defaultRootSource"/>
+        <wb-resource deploy-path="/WEB-INF/classes" source-path="/Collage_Builder/src"/>
+        <property name="context-root" value="310_Collage_Builder"/>
+        <property name="java-output-path" value="/310_Collage_Builder/bin"/>
+    </wb-module>
+</project-modules>
