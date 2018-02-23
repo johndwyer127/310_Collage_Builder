@@ -8,6 +8,14 @@ import java.awt.BasicStroke;
 import java.util.*;
 import javax.imageio.ImageIO;
 import java.awt.geom.AffineTransform;
+import java.net.HttpURLConnection;
+import java.io.BufferedReader;
+import java.net.URL;
+import java.io.InputStreamReader;
+import java.net.MalformedURLException;
+import java.net.ProtocolException;
+import java.io.IOException;
+
 
 public class ImageTransform {
 	private String topic;
@@ -16,6 +24,8 @@ public class ImageTransform {
 
 	private static final int IMAGE_WIDTH = 56;	// px
 	private static final int IMAGE_HEIGHT = 30;	// px
+	private static final String GOOGLE_SEARCH_API_KEY = "AIzaSyCQbxRMKMxuyaIVmosCa_k2sIv5BeavGFs";
+	private static final String GOOGLE_CX = "007628912923159165220:9e6kozm2iea";
 
 	public ImageTransform(String t) {
 		this.topic = t;
@@ -26,6 +36,27 @@ public class ImageTransform {
 	}
 	
 	private List<BufferedImage> fetchImages() {
+		try {
+
+			URL requestUrl = new URL("https://www.googleapis.com/customsearch/v1?key=" + GOOGLE_SEARCH_API_KEY + "&cx=" + GOOGLE_CX + "&q=" + topic + "&alt=json");
+			HttpURLConnection connection = (HttpURLConnection) requestUrl.openConnection();
+			connection.setRequestMethod("GET");
+					BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+	
+			String output;
+			System.out.println("Output from search: .... \n");
+			while((output = reader.readLine()) != null) {
+				if(output.contains("\"link\": \"")) {
+					String link = output.substring(output.indexOf("\"link\": \"") + ("\"link\": \"").length(), output.indexOf("\","));
+					System.out.println(link);	// will print Google search links
+				}
+			}	
+			connection.disconnect();
+		} catch(IOException e) {
+			System.out.println(e.getMessage());
+			e.printStackTrace();
+		} 
+			
 		return null;
 	}
 
@@ -43,6 +74,7 @@ public class ImageTransform {
 
 	// rotating images within IMAGE_ROTATION_LIMIT
 	// TODO: -- unsure if this will work at the moment
+	// taken from: https://stackoverflow.com/questions/4918482/rotating-bufferedimage-instances
 	private void rotateImages() {
 		AffineTransform imageRotator = new AffineTransform();
 		for(BufferedImage image : retrievedImages) {
@@ -67,6 +99,7 @@ public class ImageTransform {
 	}
 
 	// add 3px white frame around each image
+	// taken from: https://stackoverflow.com/questions/4219511/draw-rectangle-border-thickness
 	private void borderImages() {
 		for(BufferedImage image : retrievedImages) {
 			Graphics2D g2d = image.createGraphics();
