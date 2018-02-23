@@ -3,6 +3,8 @@ import java.awt.image.BufferedImage;
 import java.awt.Image;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Color;
+import java.awt.BasicStroke;
 import java.util.*;
 import javax.imageio.ImageIO;
 import java.awt.geom.AffineTransform;
@@ -48,6 +50,7 @@ public class ImageTransform {
 			imageRotator.translate(-image.getWidth()/2, -image.getHeight()/2);
 			Graphics2D g2d = image.createGraphics();
 			g2d.drawImage(image, 0, 0, null);
+			g2d.dispose();
 		}
 	}
 
@@ -63,9 +66,23 @@ public class ImageTransform {
 		return angle;
 	}
 
-
+	// add 3px white frame around each image
 	private void borderImages() {
-
+		for(BufferedImage image : retrievedImages) {
+			Graphics2D g2d = image.createGraphics();
+			int height = image.getHeight();
+			int width = image.getWidth();
+			int borderWidth = 3;
+			int borderControl = 1;
+			g2d.setColor(Color.WHITE);
+			g2d.setStroke(new BasicStroke(borderWidth));
+			g2d.drawLine(0, 0, 0, height);
+			g2d.drawLine(0, 0, width, 0);
+			g2d.drawLine(0, height - borderControl, width, height - borderControl);
+			g2d.drawLine(width - borderControl, height - borderControl, width - borderControl, 0);
+			g2d.drawImage(image, 0, 0, null);
+			g2d.dispose();
+		}	
 	}
 
 	private void combineImages() {
