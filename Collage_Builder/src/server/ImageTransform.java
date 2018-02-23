@@ -36,6 +36,8 @@ public class ImageTransform {
 		return null;
 	}
 	
+	// retrieves top 30 image search results from Google Custom Search API
+	// used: https://stackoverflow.com/questions/10257276/java-code-for-using-google-custom-search-api
 	private void fetchImages() {
 		try {
 
@@ -122,6 +124,7 @@ public class ImageTransform {
 		}	
 	}
 
+	// TODO: write method to generate collage from the retrieved bufferedImages
 	private void combineImages() {
 
 	}
