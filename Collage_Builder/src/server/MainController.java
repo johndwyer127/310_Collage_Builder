@@ -38,4 +38,18 @@ public class MainController extends HttpServlet {
 		doGet(request, response);
 	}
 
+	//builds collage with String paramater topic
+	public Collage buildCollage(String topic){
+
+		CollageHandler ch = new CollageHandler(topic);
+
+
+
+
+		Collage c = new Collage();
+		return c;
+
+	}
+
+
 }
