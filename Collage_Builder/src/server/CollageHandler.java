@@ -28,7 +28,7 @@ public class CollageHandler {
 		return c;
 	}
 
-	//converts BufferedImage paramater image into returned string
+	//converts BufferedImage paramater image into returned base64 string
 	public String convertBufferedImageToBase64(BufferedImage image){
 
 		String type = "png";
@@ -46,7 +46,7 @@ public class CollageHandler {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		return imageString
+		return imageString;
 	}
 
 }
