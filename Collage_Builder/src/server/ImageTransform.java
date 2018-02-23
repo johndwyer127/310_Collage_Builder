@@ -29,13 +29,14 @@ public class ImageTransform {
 
 	public ImageTransform(String t) {
 		this.topic = t;
+		this.retrievedImages = new ArrayList<BufferedImage>();
 	}
 
 	public BufferedImage createCollageImage() {
 		return null;
 	}
 	
-	private List<BufferedImage> fetchImages() {
+	private void fetchImages() {
 		try {
 
 			URL requestUrl = new URL("https://www.googleapis.com/customsearch/v1?key=" + GOOGLE_SEARCH_API_KEY + "&cx=" + GOOGLE_CX + "&q=" + topic + "&alt=json");
@@ -45,10 +46,14 @@ public class ImageTransform {
 	
 			String output;
 			System.out.println("Output from search: .... \n");
-			while((output = reader.readLine()) != null) {
+			int imageNumber = 0;	
+			while((output = reader.readLine()) != null && imageNumber < 30) {
 				if(output.contains("\"link\": \"")) {
 					String link = output.substring(output.indexOf("\"link\": \"") + ("\"link\": \"").length(), output.indexOf("\","));
 					System.out.println(link);	// will print Google search links
+					URL imageURL = new URL(link);
+					BufferedImage resultImage = (BufferedImage) ImageIO.read(imageURL);
+					this.retrievedImages.add(resultImage);
 				}
 			}	
 			connection.disconnect();
@@ -57,7 +62,6 @@ public class ImageTransform {
 			e.printStackTrace();
 		} 
 			
-		return null;
 	}
 
 	// scaling each image to 1/20th of COLLAGE_SIZE, taken from: https://stackoverflow.com/questions/9417356/bufferedimage-resize
