@@ -8,22 +8,76 @@ body {
 }
 .MainCollageView{
 	margin: auto;
-    width: 90%;
+    width: 97%;
     height: 50%;
     text-align: center;
     position: absolute;               
-   	top: 20%;
+   	top: 10%;
    	border: solid black;
 }
 .Inputs{
 	margin: auto;
-    width: 90%;
+    width: 97%;
+    height: 15%;
+    text-align: center;
+    position: absolute;               
+   	top: 60%;
+   	border: solid blue;
+}
+.PreviousCollageViewer{
+	margin: auto;
+    width: 97%;
     height: 20%;
     text-align: center;
     position: absolute;               
-   	top: 70%;
+   	top: 75%;
    	border: solid black;
+   	overflow-x: visible;
 }
-.PreviousCollageViewer{
+h1{
+	text-align: center;
+}
+form { 
+	margin: 0 auto; 
+	width:250px;
+}
+form.ExportForm{
+	float: left;
+	padding-top: 40px;
+}
+form.BuildAnotherCollageForm{
+	padding-top: 40px;
+}
+input.buttons{
+	color: white;
+	background-color: #696969;
+	border: none;
+	width: 90px;
+	height: 40px;
+}
 
+#container {
+	border: solid black;
+  position: relative;
+  height: 9em;
+  width: 99%;
+  margin: 2px auto;
+  text-align: left;
+  white-space: nowrap;
+  overflow-x: auto;
+  overflow-y: hidden;
+  vertical-align:middle;
+  position: absolute;               
+   	top: 75%;
+   	width: 97%;
+}
+#container div {
+  display: inline-block;
+  width: 14em;
+  height: 6em;
+  margin: 0.5em;
+  border: 1px solid black;
+  padding: 3px;
+  white-space: normal;
+  text-align: center;
 }
