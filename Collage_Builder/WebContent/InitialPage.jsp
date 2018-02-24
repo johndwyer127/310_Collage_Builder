@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 	<html>
 		<script>
+			//function to bsend the topic to the back end and build the collage then send the user to the next page
 			function buildCollage() 
 			{
     			window.location.href = "file:///Users/ScottKriesberg/Desktop/310_Collage_Builder/Collage_Builder/WebContent/CollageViewerPage.html";
