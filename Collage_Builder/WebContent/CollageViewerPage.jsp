@@ -15,7 +15,7 @@
 			<div>
 				<h1>Collage For Topic X</h1>
 			<div class="MainCollageView">
-				<div id="mainCollageSpace"><img onclick="exb()" id="mainCollage" src="some_image" width="99" height="36" alt="Iage Text" /></div>
+				<div id="mainCollageSpace"><img onclick="exb()" id="mainCOllage" src="some_image" width="99" height="36" alt="Iage Text" /></div>
 			</div>
 			<div class="Inputs">
 				<form class="ExportForm">
@@ -29,28 +29,13 @@
 			<!-- <div class="PreviousCollageViewer">
 				
 			</div> -->
-			<div id="container" onClick = "changeImage(event)">
+			<div id="container">
 				 <div id="1" onclick="doSomething(this)"><img  src="some_image" width="99" height="36" alt="Image Text" /></div>
 				 <div id="2" onclick="doSomething(this)"><img  src="some_image" width="99" height="36" alt="Image Text" /></div>
 				 <div id="3" onclick="doSomething(this)"><img  src="some_image" width="99" height="36" alt="Image Text" /></div>
 				 <div id="4" onclick="doSomething(this)"><img src="some_image" width="99" height="36" alt="Image Text" /></div>
 				 <div>Div 5<br/>http://coursesweb.net/html/</div>
 			</div>
-				<script type = "text/javascript">
-					function changeImage(event){
-
-						event = event || window.event;
-
-						var targetElement = event.target || event.srcElement;
-
-						if (targetElement == "IMG"){
-						    var old = document.getElementByID("mainCollage").src
-						    document.getElementByID("mainCollage").src = targetElement.getAttribute("src");
-						    targetElement.setAttribute("src", old );
-						}
-
-					}
-				</script>
 
 
     		</div>
