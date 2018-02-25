@@ -1,5 +1,11 @@
 <!DOCTYPE html>
+<%@ page import="server.*" %>
+<%@ page import = "javax.servlet.RequestDispatcher" %>
+<%@ page import = "java.util.ArrayList" %>
+<%@ page import = "javax.servlet.http.HttpSession" %>
 	<html>
+	<% ArrayList<Collage> previousCollage= (ArrayList<Collage>) session.getAttribute("PreviousCollageList"); %>
+	<% Collage mainCollage= (Collage) session.getAttribute("MainCollage"); %>
 	<npm install save-svg-as-png>
 		<head>
 			<meta charset="UTF-8">
@@ -9,6 +15,17 @@
 		<script>
 			function doSomething(elem) {
 				alert ('The ID of the element which triggered this is: ' + elem.id);
+			}
+		</script>
+		<script>
+			//function to send the topic to the back end and build the collage then send the user to the next page
+			function buildCollage() 
+			{
+				console.log("in the function");
+        		var xhttp = new XMLHttpRequest();
+        		var url = "MainController?topic="+document.getElementById("topic").value;
+            	xhttp.open("GET", url, true);
+            	xhttp.send();
 			}
 		</script>
 		<body>
@@ -28,7 +45,7 @@
 				</form>
 				<!-- form that holds the build another collage inputs including the text field and the build another collage button -->
 				<form class="BuildAnotherCollageForm">
-					<input type="text" placeholder="Enter Topic">
+					<input type="text" name="topic" placeholder="Enter Topic" onsubmit="buildCollage()">
 					<input type="submit" class="buttons" value="Build Collage">
 				</form>
 			</div>
