@@ -9,10 +9,19 @@
 			function buildCollage() 
 			{
 				console.log("in the function");
-        		var xhttp = new XMLHttpRequest();
-        		var url = "MainController?topic="+document.getElementById("topic").value;
-            	xhttp.open("GET", url, true);
-            	xhttp.send();
+	        		var xhttp = new XMLHttpRequest();
+	        		var url = "MainController?topic="+document.getElementById("topic").value;
+	            	xhttp.open("GET", url, true);
+	            	xhttp.send();
+			}
+			function IsEmpty() {
+				 if(document.getElementById("topic").value == "")
+	             {
+					 document.getElementById("submitButton").disabled = true;
+	             }else{
+	            	 	document.getElementById("submitButton").disabled = false;
+	             }
+			    
 			}
 		</script>
 		<head>
@@ -23,8 +32,8 @@
 		<body>
 			<div class="formDiv">
 				<form class="buildCollageForm" method="GET" onsubmit="buildCollage()" action="CollageViewerPage.jsp">
-					<input type="text" id="topic" name="topic" class="inputTextForm" placeholder="Enter Topic">
-					<input type="submit" class = "buildCollageButton" value="Build Collage">
+					<input type="text" id="topic" name="topic" class="inputTextForm" oninput="IsEmpty()" placeholder="Enter Topic">
+					<input type="submit" id="submitButton" class = "buildCollageButton" value="Build Collage" disabled>
 				</form>
 			</div>
 		</body>
