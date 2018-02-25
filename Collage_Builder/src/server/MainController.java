@@ -33,9 +33,16 @@ public class MainController extends HttpServlet {
 				String topic = request.getParameter("topic");
 				Collage topicCollage = buildCollage(topic);
 				HttpSession session = request.getSession();
-				session.setAttribute("MainCollage", topicCollage);
-				ArrayList<Collage> previousList = new ArrayList<Collage>();
-				session.setAttribute("PreviousCollageList", previousList);
+				if((Collage) session.getAttribute("MainCollage")!=null){
+					ArrayList<Collage> previousList = (ArrayList<Collage>) session.getAttribute("PreviousCollageList");
+					previousList.add((Collage) session.getAttribute("MainCollage"));
+					session.setAttribute("MainCollage", topicCollage);
+				}
+				else{
+					session.setAttribute("MainCollage", topicCollage);
+					ArrayList<Collage> previousList = new ArrayList<Collage>();
+					session.setAttribute("PreviousCollageList", previousList);
+				}
     }
 
 	//builds collage with String paramater topic
