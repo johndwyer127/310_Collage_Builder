@@ -30,8 +30,10 @@ public class ImageTransform {
 	private static final int COLLAGE_HEIGHT = 600;
 	private static final int COLLAGE_SIZE = COLLAGE_WIDTH * COLLAGE_HEIGHT; // total number of pixels
 	private static final int SCALED_IMAGE_SIZE = COLLAGE_SIZE/20;
-	private static final String GOOGLE_SEARCH_API_KEY = "AIzaSyCQbxRMKMxuyaIVmosCa_k2sIv5BeavGFs";
-	private static final String GOOGLE_CX = "007628912923159165220:9e6kozm2iea";	// custom search engine identifier
+//	private static final String GOOGLE_SEARCH_API_KEY = "AIzaSyCQbxRMKMxuyaIVmosCa_k2sIv5BeavGFs";
+	private static final String GOOGLE_SEARCH_API_KEY = "AIzaSyADYi8Ob0jmPJbGEMCkJwrB31bOY80RtXs";
+//	private static final String GOOGLE_CX = "007628912923159165220:9e6kozm2iea";	// custom search engine identifier
+	private static final String GOOGLE_CX = "008543189839369971484:b8selplq7z8";	// custom search engine identifier
 
 	public ImageTransform(String t) {
 		this.topic = t;
@@ -43,11 +45,9 @@ public class ImageTransform {
 //		for(BufferedImage image : this.retrievedImages) {
 //			System.out.println("initial height: " + image.getHeight() + ", initial width: " + image.getWidth());
 //		}
-		this.borderImages();
 //		for(BufferedImage image : this.retrievedImages) {
 //			System.out.println("bordered height: " + image.getHeight() + ", bordered width: " + image.getWidth());
 //		}
-		this.rotateImages();
 //		for(BufferedImage image : this.retrievedImages) {
 //			System.out.println("rotated height: " + image.getHeight() + ", rotated width: " + image.getWidth());
 //		}
@@ -55,6 +55,8 @@ public class ImageTransform {
 //		for(BufferedImage image : this.retrievedImages) {
 //			System.out.println("resized height: " + image.getHeight() + ", resized width: " + image.getWidth());
 //		}
+		this.borderImages();
+//		this.rotateImages();
 		int imageNum = 0;
 		for(BufferedImage image : this.retrievedImages) {
 			System.out.println("final height: " + image.getHeight() + ", final width: " + image.getWidth());
@@ -253,19 +255,27 @@ public class ImageTransform {
 
 	// TODO: write method to generate collage from the retrieved bufferedImages
 	private void combineImages() {
-		BufferedImage collageImage = new BufferedImage(COLLAGE_WIDTH, COLLAGE_HEIGHT, BufferedImage.TYPE_INT_RGB);
+		BufferedImage collageImage = new BufferedImage(COLLAGE_WIDTH, COLLAGE_HEIGHT, BufferedImage.TYPE_INT_ARGB);
 		Graphics g = collageImage.getGraphics();
 		int x = 0;
 		int y = 0;
 		int imageNum = 0;
-		int rowHeight = 186;
+		int rowHeight = 0;
+		int colWidth = 0;
+		Random rand = new Random();
 		for(BufferedImage image : this.retrievedImages) {
-//			if(x == 0) {
-//				rowHeight = image.getHeight();
-//			}
-//			if(image.getHeight() < rowHeight) {
-//				rowHeight = image.getHeight();
-//			}
+			if(x == 0) {
+				rowHeight = image.getHeight();
+			}
+			if(image.getHeight() < rowHeight) {
+				rowHeight = image.getHeight();
+			}
+			if(rowHeight+image.getHeight() > COLLAGE_HEIGHT) {
+				rowHeight = rand.nextInt((COLLAGE_HEIGHT-image.getHeight()) + 1);
+			}
+			if(colWidth + image.getWidth() > COLLAGE_WIDTH) {
+				colWidth = rand.nextInt((COLLAGE_WIDTH-image.getWidth()) + 1);
+			}
 			g.drawImage(image, x, y, null);
 			x += image.getWidth();
 			if(x >= COLLAGE_WIDTH) {
