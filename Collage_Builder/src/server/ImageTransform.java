@@ -1,20 +1,24 @@
-package server;
-import java.awt.image.BufferedImage;
-import java.awt.Image;
-import java.awt.Graphics2D;
-import java.awt.Color;
+
 import java.awt.BasicStroke;
-import java.util.*;
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.geom.AffineTransform;
+import java.awt.image.BufferedImage;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 import javax.imageio.IIOException;
 import javax.imageio.ImageIO;
-import java.awt.geom.AffineTransform;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.io.BufferedReader;
-import java.net.URL;
-import java.io.InputStreamReader;
-import java.io.IOException;
 
 
 public class ImageTransform {
@@ -22,8 +26,10 @@ public class ImageTransform {
 	private List<BufferedImage> retrievedImages;
 	private BufferedImage completeImage;
 
-	private static final int IMAGE_WIDTH = 56;	// pixels
-	private static final int IMAGE_HEIGHT = 30;	// pixels
+	private static final int COLLAGE_WIDTH = 1120;
+	private static final int COLLAGE_HEIGHT = 600;
+	private static final int COLLAGE_SIZE = COLLAGE_WIDTH * COLLAGE_HEIGHT; // total number of pixels
+	private static final int SCALED_IMAGE_SIZE = COLLAGE_SIZE/20;
 	private static final String GOOGLE_SEARCH_API_KEY = "AIzaSyCQbxRMKMxuyaIVmosCa_k2sIv5BeavGFs";
 	private static final String GOOGLE_CX = "007628912923159165220:9e6kozm2iea";	// custom search engine identifier
 
@@ -34,24 +40,33 @@ public class ImageTransform {
 
 	public BufferedImage createCollageImage() {
 		this.fetchImages();
-		for(BufferedImage image : this.retrievedImages) {
-			System.out.println("initial height: " + image.getHeight() + ", initial width: " + image.getWidth());
-		}
-		this.resizeImages();
-		for(BufferedImage image : this.retrievedImages) {
-			System.out.println("resized height: " + image.getHeight() + ", resized width: " + image.getWidth());
-		}
+//		for(BufferedImage image : this.retrievedImages) {
+//			System.out.println("initial height: " + image.getHeight() + ", initial width: " + image.getWidth());
+//		}
 		this.borderImages();
-		for(BufferedImage image : this.retrievedImages) {
-			System.out.println("bordered height: " + image.getHeight() + ", bordered width: " + image.getWidth());
-		}
+//		for(BufferedImage image : this.retrievedImages) {
+//			System.out.println("bordered height: " + image.getHeight() + ", bordered width: " + image.getWidth());
+//		}
 		this.rotateImages();
-		for(BufferedImage image : this.retrievedImages) {
-			System.out.println("rotated height: " + image.getHeight() + ", rotated width: " + image.getWidth());
-		}
+//		for(BufferedImage image : this.retrievedImages) {
+//			System.out.println("rotated height: " + image.getHeight() + ", rotated width: " + image.getWidth());
+//		}
+		this.resizeImages();
+//		for(BufferedImage image : this.retrievedImages) {
+//			System.out.println("resized height: " + image.getHeight() + ", resized width: " + image.getWidth());
+//		}
+		int imageNum = 0;
 		for(BufferedImage image : this.retrievedImages) {
 			System.out.println("final height: " + image.getHeight() + ", final width: " + image.getWidth());
+//			File outputFile = new File("output" + imageNum + ".png");
+//			try {
+//				ImageIO.write(image, "png", outputFile);
+//			} catch (IOException e) {
+//				e.printStackTrace();
+//			}
+//			imageNum++;
 		}
+		this.combineImages();
 		return null;
 	}
 
@@ -97,10 +112,21 @@ public class ImageTransform {
 			e.printStackTrace();
 		}
 
+		System.out.println("returning fetched images");
 		return validateRetrievedImages();
 	}
 
 	private boolean validateRetrievedImages() {
+		// verify there are no null images
+		int numImages = this.retrievedImages.size();
+		for(int i = 0; i < numImages; i++) {
+			if(this.retrievedImages.get(i) == null) {
+				this.retrievedImages.remove(i);
+				i--;
+				numImages--;
+			}
+		}
+
 		// not enough images
 		if(this.retrievedImages.size() < 30) {
 			System.out.println("was unable to find enough pictures! current size: " + this.retrievedImages.size());
@@ -121,23 +147,34 @@ public class ImageTransform {
 	private URL generateRequestURL(int resultNumber) throws MalformedURLException {
 		URL requestURL;
 		if(resultNumber > 0) {
-			requestURL = new URL("https://www.googleapis.com/customsearch/v1?key=" + GOOGLE_SEARCH_API_KEY + "&cx=" + GOOGLE_CX + "&q=" + this.topic + "&searchType=image&start=" + resultNumber + "&num=10");
+			requestURL = new URL("https://www.googleapis.com/customsearch/v1?key=" + GOOGLE_SEARCH_API_KEY + "&cx=" + GOOGLE_CX + "&q=" + this.topic + "&searchType=image&imgType=photo&imgSize=medium&start=" + resultNumber + "&num=10");
 		}
 		else {
-			requestURL = new URL("https://www.googleapis.com/customsearch/v1?key=" + GOOGLE_SEARCH_API_KEY + "&cx=" + GOOGLE_CX + "&q=" + topic + "&searchType=image&num=10");
+			requestURL = new URL("https://www.googleapis.com/customsearch/v1?key=" + GOOGLE_SEARCH_API_KEY + "&cx=" + GOOGLE_CX + "&q=" + topic + "&searchType=image&imgType=photo&imgSize=medium&num=10");
 		}
 
 		return requestURL;
 	}
 
-	// scaling each image to 1/20th of COLLAGE_SIZE, see: https://stackoverflow.com/questions/9417356/bufferedimage-resize
+	// scaling each image to roughly 1/20th of COLLAGE_SIZE, see: https://stackoverflow.com/questions/9417356/bufferedimage-resize
 	private void resizeImages() {
 		int numImages = this.retrievedImages.size();
 		for(int i = 0; i < numImages; i++) {
 			BufferedImage originalImage = this.retrievedImages.get(0);
 			this.retrievedImages.remove(0);
-			Image tmp = originalImage.getScaledInstance(IMAGE_WIDTH, IMAGE_HEIGHT, Image.SCALE_SMOOTH);
-			BufferedImage resizedImage = new BufferedImage(IMAGE_WIDTH, IMAGE_HEIGHT, BufferedImage.TYPE_INT_ARGB);
+
+			int originalWidth = originalImage.getWidth();
+			int originalHeight = originalImage.getHeight();
+			int originalImageSize = originalWidth * originalHeight;
+			int scaleFactor = originalImageSize/SCALED_IMAGE_SIZE;
+			scaleFactor = (int) Math.sqrt(scaleFactor);
+
+			int scaledWidth = (int) (originalWidth/scaleFactor);
+			int scaledHeight = (int) (originalHeight/scaleFactor);
+
+			Image tmp = originalImage.getScaledInstance(scaledWidth, scaledHeight, Image.SCALE_SMOOTH);
+			System.out.println("originalWidth: " + originalWidth + ", originalHeight: " + originalHeight + " , scaledWidth: " + scaledWidth + ", scaledHeight: " + scaledHeight);
+			BufferedImage resizedImage = new BufferedImage(scaledWidth, scaledHeight, BufferedImage.TYPE_INT_ARGB);
 
 			Graphics2D g2d = resizedImage.createGraphics();
 			g2d.drawImage(tmp, 0, 0, null);
@@ -153,13 +190,26 @@ public class ImageTransform {
 	// taken from: https://stackoverflow.com/questions/4918482/rotating-bufferedimage-instances
 	private void rotateImages() {
 		AffineTransform imageRotator = new AffineTransform();
-		for(BufferedImage image : retrievedImages) {
+		int numImages = this.retrievedImages.size();
+		for(int i = 0; i < numImages; i++) {
+			BufferedImage originalImage = this.retrievedImages.get(0);
+			this.retrievedImages.remove(0);
 			imageRotator.rotate(generateRotationAmount());
-			imageRotator.translate(-image.getWidth()/2, -image.getHeight()/2);
-			Graphics2D g2d = image.createGraphics();
-			g2d.drawImage(image, 0, 0, null);
+			imageRotator.translate(-originalImage.getWidth()/2, -originalImage.getHeight()/2);
+
+			Graphics2D g2d = originalImage.createGraphics();
+			g2d.drawImage(originalImage, 0, 0, null);
+
+			this.retrievedImages.add(originalImage);
 			g2d.dispose();
 		}
+//		for(BufferedImage image : retrievedImages) {
+//			imageRotator.rotate(generateRotationAmount());
+//			imageRotator.translate(-image.getWidth()/2, -image.getHeight()/2);
+//			Graphics2D g2d = image.createGraphics();
+//			g2d.drawImage(image, 0, 0, null);
+//			g2d.dispose();
+//		}
 	}
 
 	// generate random rotation amount for an image in radians within IMAGE_ROTATION_LIMIT
@@ -196,6 +246,23 @@ public class ImageTransform {
 
 	// TODO: write method to generate collage from the retrieved bufferedImages
 	private void combineImages() {
+		BufferedImage collageImage = new BufferedImage(COLLAGE_WIDTH, COLLAGE_HEIGHT, BufferedImage.TYPE_INT_RGB);
+		Graphics g = collageImage.getGraphics();
+		int x = 0;
+		int y = 0;
+		for(BufferedImage image : this.retrievedImages) {
+			g.drawImage(image, x, y, null);
+			x += image.getWidth();
+			if(x >= collageImage.getWidth()) {
+				x = 0;
+				y += collageImage.getHeight();
+			}
+		}
+		try {
+			ImageIO.write(collageImage,"png",new File(this.topic + "-collage.png"));
+		} catch(IOException e) {
+			e.getMessage();
+		}
 
 	}
 
@@ -209,7 +276,7 @@ public class ImageTransform {
 
 	// for testing purposes
 	public static void main(String[] args) {
-		ImageTransform imageTransform = new ImageTransform("jeff");
+		ImageTransform imageTransform = new ImageTransform("cow");
 //		imageTransform.fetchImages();
 		imageTransform.createCollageImage();
 	}
