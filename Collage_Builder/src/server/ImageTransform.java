@@ -148,9 +148,11 @@ public class ImageTransform {
 		URL requestURL;
 		if(resultNumber > 0) {
 			requestURL = new URL("https://www.googleapis.com/customsearch/v1?key=" + GOOGLE_SEARCH_API_KEY + "&cx=" + GOOGLE_CX + "&q=" + this.topic + "&searchType=image&imgType=photo&imgSize=medium&start=" + resultNumber + "&num=10");
+//			requestURL = new URL("https://www.googleapis.com/customsearch/v1?key=" + GOOGLE_SEARCH_API_KEY + "&cx=" + GOOGLE_CX + "&q=" + this.topic + "&searchType=image&start=" + resultNumber + "&num=10");
 		}
 		else {
 			requestURL = new URL("https://www.googleapis.com/customsearch/v1?key=" + GOOGLE_SEARCH_API_KEY + "&cx=" + GOOGLE_CX + "&q=" + topic + "&searchType=image&imgType=photo&imgSize=medium&num=10");
+//			requestURL = new URL("https://www.googleapis.com/customsearch/v1?key=" + GOOGLE_SEARCH_API_KEY + "&cx=" + GOOGLE_CX + "&q=" + topic + "&searchType=image&num=10");
 		}
 
 		return requestURL;
@@ -166,15 +168,20 @@ public class ImageTransform {
 			int originalWidth = originalImage.getWidth();
 			int originalHeight = originalImage.getHeight();
 			int originalImageSize = originalWidth * originalHeight;
-			int scaleFactor = originalImageSize/SCALED_IMAGE_SIZE;
-			scaleFactor = (int) Math.sqrt(scaleFactor);
+			double scaleFactor = originalImageSize/SCALED_IMAGE_SIZE;
 
-			int scaledWidth = (int) (originalWidth/scaleFactor);
-			int scaledHeight = (int) (originalHeight/scaleFactor);
+			if(scaleFactor == 0) {
+				scaleFactor = 1;
+			}
 
-			Image tmp = originalImage.getScaledInstance(scaledWidth, scaledHeight, Image.SCALE_SMOOTH);
+			scaleFactor = Math.sqrt(scaleFactor);
+
+			double scaledWidth = (originalWidth/scaleFactor);
+			double scaledHeight = (originalHeight/scaleFactor);
+
+			Image tmp = originalImage.getScaledInstance((int)scaledWidth, (int)scaledHeight, Image.SCALE_SMOOTH);
 			System.out.println("originalWidth: " + originalWidth + ", originalHeight: " + originalHeight + " , scaledWidth: " + scaledWidth + ", scaledHeight: " + scaledHeight);
-			BufferedImage resizedImage = new BufferedImage(scaledWidth, scaledHeight, BufferedImage.TYPE_INT_ARGB);
+			BufferedImage resizedImage = new BufferedImage((int)scaledWidth, (int)scaledHeight, BufferedImage.TYPE_INT_ARGB);
 
 			Graphics2D g2d = resizedImage.createGraphics();
 			g2d.drawImage(tmp, 0, 0, null);
@@ -250,13 +257,23 @@ public class ImageTransform {
 		Graphics g = collageImage.getGraphics();
 		int x = 0;
 		int y = 0;
+		int imageNum = 0;
+		int rowHeight = 186;
 		for(BufferedImage image : this.retrievedImages) {
+//			if(x == 0) {
+//				rowHeight = image.getHeight();
+//			}
+//			if(image.getHeight() < rowHeight) {
+//				rowHeight = image.getHeight();
+//			}
 			g.drawImage(image, x, y, null);
 			x += image.getWidth();
-			if(x >= collageImage.getWidth()) {
+			if(x >= COLLAGE_WIDTH) {
 				x = 0;
-				y += collageImage.getHeight();
+				y += rowHeight;
 			}
+			System.out.println("imageNum: " + imageNum + ", currY: " + y + ", currX: " + x);
+			imageNum++;
 		}
 		try {
 			ImageIO.write(collageImage,"png",new File(this.topic + "-collage.png"));
@@ -277,7 +294,6 @@ public class ImageTransform {
 	// for testing purposes
 	public static void main(String[] args) {
 		ImageTransform imageTransform = new ImageTransform("cow");
-//		imageTransform.fetchImages();
 		imageTransform.createCollageImage();
 	}
 }
