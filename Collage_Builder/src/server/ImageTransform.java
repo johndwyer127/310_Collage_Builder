@@ -58,16 +58,8 @@ public class ImageTransform {
 //		}
 		this.borderImages();
 		this.rotateImages();
-		int imageNum = 0;
 		for(BufferedImage image : this.retrievedImages) {
 			System.out.println("final height: " + image.getHeight() + ", final width: " + image.getWidth());
-//			File outputFile = new File("output" + imageNum + ".png");
-//			try {
-//				ImageIO.write(image, "png", outputFile);
-//			} catch (IOException e) {
-//				e.printStackTrace();
-//			}
-//			imageNum++;
 		}
 		this.combineImages();
 		return null;
@@ -201,17 +193,32 @@ public class ImageTransform {
 		int numImages = this.retrievedImages.size();
 		for(int i = 0; i < numImages; i++) {
 			BufferedImage originalImage = this.retrievedImages.get(0);
-			BufferedImage rotatedImage = new BufferedImage(originalImage.getWidth(), originalImage.getHeight(), BufferedImage.TYPE_INT_ARGB);
-			this.retrievedImages.remove(0);
-
 			double rotationAmount = generateRotationAmount();
 			System.out.println("rotationAmount: " + rotationAmount);
+
+			double sin = Math.abs(Math.sin(rotationAmount));
+			double cos = Math.abs(Math.cos(rotationAmount));
+
+			int newWidth = (int) Math.floor(originalImage.getWidth() * cos + originalImage.getHeight() * sin);
+			int newHeight = (int) Math.floor(originalImage.getHeight() * cos + originalImage.getWidth() * sin);
+			System.out.println("oldWidth: " + originalImage.getWidth() + ", originalHeight: " + originalImage.getHeight());
+			System.out.println("newWidth: " + newWidth + ", newHeight: " + newHeight);
+			BufferedImage rotatedImage = new BufferedImage(newWidth, newHeight, BufferedImage.TYPE_INT_ARGB);
+			this.retrievedImages.remove(0);
+
+
 			imageRotator.rotate(rotationAmount, originalImage.getWidth()/2, originalImage.getHeight()/2);
 			AffineTransformOp imageRotatorOp = new AffineTransformOp(imageRotator, AffineTransformOp.TYPE_BILINEAR);
 
 			rotatedImage = imageRotatorOp.filter(originalImage, null);
 
 			this.retrievedImages.add(rotatedImage);
+			try {
+				ImageIO.write(rotatedImage,"png",new File(i + "thPicture.png"));
+			} catch (IOException e) {
+				System.out.println("IO Exception!");
+			}
+
 		}
 
 	}
