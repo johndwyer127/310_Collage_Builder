@@ -5,6 +5,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.geom.AffineTransform;
+import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.File;
@@ -30,8 +31,10 @@ public class ImageTransform {
 	private static final int COLLAGE_HEIGHT = 600;
 	private static final int COLLAGE_SIZE = COLLAGE_WIDTH * COLLAGE_HEIGHT; // total number of pixels
 	private static final int SCALED_IMAGE_SIZE = COLLAGE_SIZE/20;
-	private static final String GOOGLE_SEARCH_API_KEY = "AIzaSyCQbxRMKMxuyaIVmosCa_k2sIv5BeavGFs";
-	private static final String GOOGLE_CX = "007628912923159165220:9e6kozm2iea";	// custom search engine identifier
+//	private static final String GOOGLE_SEARCH_API_KEY = "AIzaSyCQbxRMKMxuyaIVmosCa_k2sIv5BeavGFs";
+	private static final String GOOGLE_SEARCH_API_KEY = "AIzaSyADYi8Ob0jmPJbGEMCkJwrB31bOY80RtXs";
+//	private static final String GOOGLE_CX = "007628912923159165220:9e6kozm2iea";	// custom search engine identifier
+	private static final String GOOGLE_CX = "008543189839369971484:b8selplq7z8";	// custom search engine identifier
 
 	public ImageTransform(String t) {
 		this.topic = t;
@@ -43,11 +46,9 @@ public class ImageTransform {
 //		for(BufferedImage image : this.retrievedImages) {
 //			System.out.println("initial height: " + image.getHeight() + ", initial width: " + image.getWidth());
 //		}
-		this.borderImages();
 //		for(BufferedImage image : this.retrievedImages) {
 //			System.out.println("bordered height: " + image.getHeight() + ", bordered width: " + image.getWidth());
 //		}
-		this.rotateImages();
 //		for(BufferedImage image : this.retrievedImages) {
 //			System.out.println("rotated height: " + image.getHeight() + ", rotated width: " + image.getWidth());
 //		}
@@ -55,16 +56,10 @@ public class ImageTransform {
 //		for(BufferedImage image : this.retrievedImages) {
 //			System.out.println("resized height: " + image.getHeight() + ", resized width: " + image.getWidth());
 //		}
-		int imageNum = 0;
+		this.borderImages();
+		this.rotateImages();
 		for(BufferedImage image : this.retrievedImages) {
 			System.out.println("final height: " + image.getHeight() + ", final width: " + image.getWidth());
-//			File outputFile = new File("output" + imageNum + ".png");
-//			try {
-//				ImageIO.write(image, "png", outputFile);
-//			} catch (IOException e) {
-//				e.printStackTrace();
-//			}
-//			imageNum++;
 		}
 		this.combineImages();
 		return null;
@@ -193,30 +188,39 @@ public class ImageTransform {
 	}
 
 	// rotating images within IMAGE_ROTATION_LIMIT
-	// TODO: -- unsure if this will work at the moment
-	// taken from: https://stackoverflow.com/questions/4918482/rotating-bufferedimage-instances
 	private void rotateImages() {
 		AffineTransform imageRotator = new AffineTransform();
 		int numImages = this.retrievedImages.size();
 		for(int i = 0; i < numImages; i++) {
 			BufferedImage originalImage = this.retrievedImages.get(0);
+			double rotationAmount = generateRotationAmount();
+			System.out.println("rotationAmount: " + rotationAmount);
+
+			double sin = Math.abs(Math.sin(rotationAmount));
+			double cos = Math.abs(Math.cos(rotationAmount));
+
+			int newWidth = (int) Math.floor(originalImage.getWidth() * cos + originalImage.getHeight() * sin);
+			int newHeight = (int) Math.floor(originalImage.getHeight() * cos + originalImage.getWidth() * sin);
+			System.out.println("oldWidth: " + originalImage.getWidth() + ", originalHeight: " + originalImage.getHeight());
+			System.out.println("newWidth: " + newWidth + ", newHeight: " + newHeight);
+			BufferedImage rotatedImage = new BufferedImage(newWidth, newHeight, BufferedImage.TYPE_INT_ARGB);
 			this.retrievedImages.remove(0);
-			imageRotator.rotate(generateRotationAmount());
-			imageRotator.translate(-originalImage.getWidth()/2, -originalImage.getHeight()/2);
 
-			Graphics2D g2d = originalImage.createGraphics();
-			g2d.drawImage(originalImage, 0, 0, null);
 
-			this.retrievedImages.add(originalImage);
-			g2d.dispose();
+			imageRotator.rotate(rotationAmount, originalImage.getWidth()/2, originalImage.getHeight()/2);
+			AffineTransformOp imageRotatorOp = new AffineTransformOp(imageRotator, AffineTransformOp.TYPE_BILINEAR);
+
+			rotatedImage = imageRotatorOp.filter(originalImage, null);
+
+			this.retrievedImages.add(rotatedImage);
+			try {
+				ImageIO.write(rotatedImage,"png",new File(i + "thPicture.png"));
+			} catch (IOException e) {
+				System.out.println("IO Exception!");
+			}
+
 		}
-//		for(BufferedImage image : retrievedImages) {
-//			imageRotator.rotate(generateRotationAmount());
-//			imageRotator.translate(-image.getWidth()/2, -image.getHeight()/2);
-//			Graphics2D g2d = image.createGraphics();
-//			g2d.drawImage(image, 0, 0, null);
-//			g2d.dispose();
-//		}
+
 	}
 
 	// generate random rotation amount for an image in radians within IMAGE_ROTATION_LIMIT
@@ -253,19 +257,29 @@ public class ImageTransform {
 
 	// TODO: write method to generate collage from the retrieved bufferedImages
 	private void combineImages() {
-		BufferedImage collageImage = new BufferedImage(COLLAGE_WIDTH, COLLAGE_HEIGHT, BufferedImage.TYPE_INT_RGB);
+		BufferedImage collageImage = new BufferedImage(COLLAGE_WIDTH, COLLAGE_HEIGHT, BufferedImage.TYPE_INT_ARGB);
 		Graphics g = collageImage.getGraphics();
 		int x = 0;
 		int y = 0;
 		int imageNum = 0;
-		int rowHeight = 186;
+		int rowHeight = 0;
+		int colWidth = 0;
+		Random rand = new Random();
 		for(BufferedImage image : this.retrievedImages) {
-//			if(x == 0) {
-//				rowHeight = image.getHeight();
-//			}
-//			if(image.getHeight() < rowHeight) {
-//				rowHeight = image.getHeight();
-//			}
+			if(x == 0) {
+				rowHeight = image.getHeight();
+			}
+			if(image.getHeight() < rowHeight) {
+				rowHeight = image.getHeight();
+			}
+			if(y+image.getHeight() > COLLAGE_HEIGHT) {
+//				rowHeight = rand.nextInt((COLLAGE_HEIGHT-image.getHeight()) + 1);
+				y = COLLAGE_HEIGHT-image.getHeight();
+			}
+			if(x + image.getWidth() > COLLAGE_WIDTH) {
+//				colWidth = rand.nextInt((COLLAGE_WIDTH-image.getWidth()) + 1);
+				x = COLLAGE_WIDTH - image.getWidth();
+			}
 			g.drawImage(image, x, y, null);
 			x += image.getWidth();
 			if(x >= COLLAGE_WIDTH) {
@@ -293,7 +307,7 @@ public class ImageTransform {
 
 	// for testing purposes
 	public static void main(String[] args) {
-		ImageTransform imageTransform = new ImageTransform("cow");
+		ImageTransform imageTransform = new ImageTransform("dog");
 		imageTransform.createCollageImage();
 	}
 }
