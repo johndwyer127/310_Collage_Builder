@@ -14,8 +14,8 @@ body {
     position: absolute;               
    	top: 10%;
    	border: solid black;
-   	/*min-height: 600px;
-   	min-width: 800px;*/
+   	min-height: 600px;
+   	min-width: 800px;
 }
 .Inputs{
 	margin: auto;

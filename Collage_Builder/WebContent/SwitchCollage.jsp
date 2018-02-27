@@ -31,7 +31,7 @@
 						<input type="button" class="buttons" name="Export" value="Export">
 					</form>
 				</a>
-				 
+				
 				<!-- form that holds the build another collage inputs including the text field and the build another collage button -->
 				<form class="BuildAnotherCollageForm">
 					<input type="text" name="topic" placeholder="Enter Topic" oninput="IsEmpty()"  disable onsubmit="buildCollage()">
@@ -41,6 +41,6 @@
 			<!-- Div to hold the previos collage picker with divs to hold each image -->
 			<div id="container" > <!--  onClick = "changeImage(event)"-->
 			<%for(int i =0; i<previousCollage.size(); i++){ %>
-				 <div id=<%=i %> onclick="doSomething(this)"><img  src=<%=previousCollage.get(i).getImage()%> width="99" height="36" alt="Image Text" /></div>
+				 <div id=<%=i %> onclick="doSomething(this)"><img  src=<%=previousCollage.get(i).getImage()%> width="100%" height="100%" alt="Image Text" /></div>
 			<%} %>
 			</div>
