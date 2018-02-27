@@ -6,15 +6,43 @@
 	<html>
 	<% ArrayList<Collage> previousCollage= (ArrayList<Collage>) session.getAttribute("PreviousCollageList"); %>
 	<% Collage mainCollage= (Collage) session.getAttribute("MainCollage"); %>
-	<npm install save-svg-as-png>
 		<head>
 			<meta charset="UTF-8">
 			<title>Collage Viewer Page</title>
 			<link rel="stylesheet" href="CollageViewerPage.css">
 		</head>
+		<%
+		Collage main = new Collage();
+		main.setTopic("Ming");
+		main.setImage("http://www-scf.usc.edu/~csci201/images/ming_chen.jpg");
+		
+		Collage one = new Collage();
+		one.setTopic("Miller");
+		one.setImage("http://www-scf.usc.edu/~csci201/images/nikita_pashintsev.jpg");
+		
+		Collage two = new Collage();
+		two.setTopic("Suvir");
+		two.setImage("http://www-scf.usc.edu/~csci201/images/nikita_pashintsev.jpg");
+		
+		Collage three = new Collage();
+		three.setTopic("Scott");
+		three.setImage("http://www-scf.usc.edu/~csci201/images/nikita_pashintsev.jpg");
+		
+		ArrayList<Collage> previous = new ArrayList<Collage>();
+		previous.add(one);
+		previous.add(two);
+		previous.add(three);
+		%>
 		<script>
 			function doSomething(elem) {
-				alert ('The ID of the element which triggered this is: ' + elem.id);
+				var xhttp = new XMLHttpRequest();
+				var switchCollages = "SwitchCollage.jsp?";
+				 
+				buttonsPressed += "index=" + elem.id;
+	  	  		 
+				xhttp.open("GET", buttonsPressed, false);
+	  	  		xhttp.send();
+	  	  		document.getElementById("entirePage").innerHTML = xhttp.responseText;
 			}
 		</script>
 		<script>
@@ -27,35 +55,46 @@
             	xhttp.open("GET", url, true);
             	xhttp.send();
 			}
+			function IsEmpty() {
+				 if(document.getElementById("topic").value == "")
+	             {
+					 document.getElementById("submitButton").disabled = true;
+	             }else{
+	            	 	document.getElementById("submitButton").disabled = false;
+	             }
+			    
+			}
 		</script>
 		<body>
-			<div>
+			<div id="entirePage">
 				<!-- Title at top of the page -->
-				<h1>Collage For Topic X</h1>
+				<h1>Collage For Topic <%= main.getTopic() %></h1>
 				<!-- Div to hold the main collage viewing area -->
 			<div class="MainCollageView">
-				<!-- DI\iv to hold image that populates the main collage viewer area -->
-				<div id="mainCollageSpace"><img onclick="exb()" id="mainCollage" src="some_image" width="99" height="36" alt="Iage Text" /></div>
+				<!-- Div to hold image that populates the main collage viewer area -->
+				<div id="mainCollageSpace"><img onclick="exb()" id="mainCollage" src=<%=main.getImage() %> width="99" height="36" alt="Iage Text" /></div>
 			</div>
 			<!-- Div to hold all of the buttons and input fields -->
 			<div class="Inputs">
 				<!-- form that holds the export button -->
-				<form class="ExportForm">
-					<input type="button" class="buttons" name="Export" value="Export">
-				</form>
+				<a href=<%=main.getImage()%> download>
+				  	<form class="ExportForm">
+						<input type="button" class="buttons" name="Export" value="Export">
+					</form>
+				</a>
+				
 				<!-- form that holds the build another collage inputs including the text field and the build another collage button -->
 				<form class="BuildAnotherCollageForm">
-					<input type="text" name="topic" placeholder="Enter Topic" onsubmit="buildCollage()">
+					<input type="text" name="topic" placeholder="Enter Topic" oninput="IsEmpty()"  disable onsubmit="buildCollage()">
 					<input type="submit" class="buttons" value="Build Collage">
 				</form>
 			</div>
 			<!-- Div to hold the previos collage picker with divs to hold each image -->
-			<div id="container" onClick = "changeImage(event)">
-				 <div id="1" onclick="doSomething(this)"><img  src="some_image" width="99" height="36" alt="Image Text" /></div>
-				 <div id="2" onclick="doSomething(this)"><img  src="some_image" width="99" height="36" alt="Image Text" /></div>
-				 <div id="3" onclick="doSomething(this)"><img  src="some_image" width="99" height="36" alt="Image Text" /></div>
-				 <div id="4" onclick="doSomething(this)"><img src="some_image" width="99" height="36" alt="Image Text" /></div>
-				 <div>Div 5<br/>http://coursesweb.net/html/</div>
+			<div id="container" > <!--  onClick = "changeImage(event)"-->
+			<%for(int i =0; i<previous.size(); i++){ %>
+				 <div id=<%=i %> onclick="doSomething(this)"><img  src=<%=previous.get(i).getImage()%> width="99" height="36" alt="Image Text" /></div>
+			<%} %>
+			</div>
 			</div>
 				<script type = "text/javascript">
 					// function to switch images when clicked on in the previous collage viewer
@@ -75,7 +114,7 @@
 				</script>
 
 
-    		</div>
+    		
 			</div>
 			
 		</body>
