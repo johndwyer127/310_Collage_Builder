@@ -31,7 +31,7 @@
 						<input type="button" class="buttons" name="Export" value="Export">
 					</form>
 				</a>
-				
+				 
 				<!-- form that holds the build another collage inputs including the text field and the build another collage button -->
 				<form class="BuildAnotherCollageForm">
 					<input type="text" name="topic" placeholder="Enter Topic" oninput="IsEmpty()"  disable onsubmit="buildCollage()">
