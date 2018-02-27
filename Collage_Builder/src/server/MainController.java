@@ -47,8 +47,8 @@ public class MainController extends HttpServlet {
 
 	//builds collage with String paramater topic
 	public Collage buildCollage(String topic){
-		//CollageHandler ch = new CollageHandler(topic);
-		Collage c = new Collage();
+		CollageHandler ch = new CollageHandler(topic);
+		Collage c = ch.build();
 		return c;
 
 	}
