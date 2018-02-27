@@ -1,0 +1,21 @@
+<html>
+<head>
+
+<script type="text/javascript">
+function doSomething(text)
+  {
+    if (text.length > 0)
+      document.getElementById("submit_button").disabled = false;
+    else
+      document.getElementById("submit_button").disabled = true;
+  }
+</script>
+
+</head>
+<body>
+
+<input type="text" id="search_text" onchange="doSomething(this.value)">
+<input type="submit" id="submit_button" value="Search" disabled="true">
+
+</body>
+</html>
