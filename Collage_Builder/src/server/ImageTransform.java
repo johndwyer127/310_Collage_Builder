@@ -297,10 +297,4 @@ public class ImageTransform {
 		return this.completeImage;
 	}
 
-	// for testing purposes
-	public static void main(String[] args) {
-		ImageTransform imageTransform = new ImageTransform("dog");
-		imageTransform.createCollageImage();
-//		imageTransform.generateInsufficientNumberImage();
-	}
 }
