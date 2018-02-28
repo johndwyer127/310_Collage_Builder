@@ -14,7 +14,7 @@
 			  }
 			}
 			//function to bsend the topic to the back end and build the collage then send the user to the next page
-			function buildCollage() 
+			function buildCollage()
 			{
 				console.log("in the function");
 	        		var xhttp = new XMLHttpRequest();
@@ -32,7 +32,7 @@
 	             }else{
 	            	 	document.getElementById("submitButton").disabled = false;
 	             }
-			    
+
 			}
 		</script>
 		<head>
@@ -41,10 +41,16 @@
 			<link rel="stylesheet" href="InitialPage.css">
 		</head>
 		<body>
-			<div class="formDiv">
+			<!-- <div class="formDiv">
 				<form class="buildCollageForm" method="GET" onsubmit="return buildCollage()">
 					<input type="text" id="topic" name="topic" class="inputTextForm" oninput="IsEmpty()" placeholder="Enter Topic">
 					<input type="submit" id="submitButton" class = "buildCollageButton" value="Build Collage" disabled>
+				</form>
+			</div> -->
+			<div class="formDiv">
+				<form method="post" enctype="multipart/form-data" action="${pageContext.request.contextPath}/MainController">
+					<input type="text" id="topic" name="topic" class="inputTextForm" oninput="IsEmpty()" placeholder="Enter Topic">
+					<input type="submit" id="submitButton" class="buildCollageButton" value="Build Collage">
 				</form>
 			</div>
 		</body>
