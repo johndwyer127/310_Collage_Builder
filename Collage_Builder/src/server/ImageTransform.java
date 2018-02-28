@@ -54,7 +54,6 @@ public class ImageTransform {
 	public BufferedImage createCollageImage() {
 		if(this.fetchImages()) {
 			this.resizeImages();
-			this.borderImages();
 			return this.combineImages();
 		}
 
@@ -194,8 +193,7 @@ public class ImageTransform {
 
 	// adds 3px white frame around each image
 	// see: https://stackoverflow.com/questions/4219511/draw-rectangle-border-thickness
-	private void borderImages() {
-		for(BufferedImage image : retrievedImages) {
+	private void borderImage(BufferedImage image) {
 			Graphics2D g2d = image.createGraphics();
 			int height = image.getHeight();
 			int width = image.getWidth();
@@ -210,7 +208,6 @@ public class ImageTransform {
 			g2d.drawLine(width - borderControl, height - borderControl, width - borderControl, 0);
 			g2d.drawImage(image, 0, 0, null);
 			g2d.dispose();
-		}
 	}
 
 	// generates collage from the retrieved bufferedImages
@@ -226,11 +223,14 @@ public class ImageTransform {
 				Image tmp = image.getScaledInstance((int)COLLAGE_WIDTH, (int)COLLAGE_HEIGHT, Image.SCALE_SMOOTH);
 				BufferedImage resizedImage = new BufferedImage((int)COLLAGE_WIDTH, (int)COLLAGE_HEIGHT, BufferedImage.TYPE_INT_ARGB);
 
+				this.borderImage(resizedImage);
+
 				Graphics2D g2d = resizedImage.createGraphics();
 				g2d.drawImage(tmp, 0, 0, null);
 				g.drawImage(resizedImage, 0, 0, null);
 			}
 			else {
+				this.borderImage(image);
 				AffineTransform backup = g.getTransform();
 				AffineTransform imageRotator = new AffineTransform();
 				int rotationAmount = generateRotationAmount();
@@ -256,7 +256,8 @@ public class ImageTransform {
 				// }
 
 				// draws rotated image onto the collage canvas/backdrop
-				g.drawImage(image, x, y, null);
+				// g.drawImage(image, x, y, null);
+				g.drawImage(image, null, x, y);
 				g.setTransform(backup);
 			}
 
