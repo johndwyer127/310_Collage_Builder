@@ -5,15 +5,7 @@
 <%@ page import = "javax.servlet.RequestDispatcher" %>
 	<html>
 		<script>
-		function sleep(milliseconds) {
-			  var start = new Date().getTime();
-			  for (var i = 0; i < 1e7; i++) {
-			    if ((new Date().getTime() - start) > milliseconds){
-			      break;
-			    }
-			  }
-			}
-			//function to bsend the topic to the back end and build the collage then send the user to the next page
+			//function to send the topic to the back end and build the collage then send the user to the next page
 			function buildCollage()
 			{
 				console.log("in the function");
@@ -21,8 +13,6 @@
 	        		var url = "MainController?topic="+document.getElementById("topic").value+"&first=true";
 	            	xhttp.open("GET", url, true);
 	            	xhttp.send();
-	            	//sleep(10000);
-	            //request.getRequestDispatcher("CollageViewerPage.jsp").forward(request, response);
 	            	return true;
 			}
 			function IsEmpty() {
