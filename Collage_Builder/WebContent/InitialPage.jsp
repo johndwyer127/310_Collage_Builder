@@ -31,16 +31,10 @@
 			<link rel="stylesheet" href="InitialPage.css">
 		</head>
 		<body>
-			<!-- <div class="formDiv">
-				<form class="buildCollageForm" method="GET" onsubmit="return buildCollage()">
-					<input type="text" id="topic" name="topic" class="inputTextForm" oninput="IsEmpty()" placeholder="Enter Topic">
-					<input type="submit" id="submitButton" class = "buildCollageButton" value="Build Collage" disabled>
-				</form>
-			</div> -->
 			<div class="formDiv">
 				<form method="post" action="${pageContext.request.contextPath}/MainController">
 					<input type="text" id="topic" name="topic" class="inputTextForm" oninput="IsEmpty()" placeholder="Enter Topic">
-					<input type="submit" id="submitButton" class="buildCollageButton" value="Build Collage">
+					<input type="submit" id="submitButton" class="buildCollageButton" value="Build Collage" disabled>
 				</form>
 			</div>
 		</body>

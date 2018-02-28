@@ -65,7 +65,7 @@
 					<!-- form that holds the build another collage inputs including the text field and the build another collage button -->
 					<form class="BuildAnotherCollageForm">
 						<input type="text" name="topic" placeholder="Enter Topic" oninput="IsEmpty()"  disable onsubmit="buildCollage()">
-						<input type="submit" class="buttons" value="Build Collage">
+						<input type="submit" class="buttons" value="Build Another Collage">
 					</form>
 				</div>
 				

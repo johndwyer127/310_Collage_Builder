@@ -1,5 +1,9 @@
 @charset "UTF-8";
 
+h1{
+	font-size: 25px;
+}
+
 form {
     display: inline-block;
 }
@@ -54,8 +58,9 @@ input.buttons{
 	color: white;
 	background-color: #696969;
 	border: none;
-	width: 90px;
 	height: 40px;
+	font-size: 8px;
+	width: 100px;
 }
 
 #container {
