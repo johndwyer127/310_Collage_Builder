@@ -243,20 +243,6 @@ public class ImageTransform {
 				x = rand.nextInt(COLLAGE_WIDTH-image.getWidth()*4) + image.getWidth()*2;
 				y = rand.nextInt(COLLAGE_HEIGHT-image.getHeight()*4) + image.getHeight()*2;
 
-				// // adjusts image location to be in bounds
-				// x += image.getWidth()*1.5;
-				// y += image.getHeight()*1.5;
-				//
-				// // checks if randomly generated location is outside of collage bounds and adjusts if so
-				// if(x + image.getWidth() > COLLAGE_WIDTH) {
-				// 	x -= image.getWidth()*1.5;
-				// }
-				// if(y + image.getHeight() > COLLAGE_HEIGHT) {
-				// 	y -= image.getHeight()*1.5;
-				// }
-
-				// draws rotated image onto the collage canvas/backdrop
-				// g.drawImage(image, x, y, null);
 				g.drawImage(image, null, x, y);
 				g.setTransform(backup);
 			}
