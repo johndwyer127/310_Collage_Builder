@@ -240,8 +240,19 @@ public class ImageTransform {
 				g.transform(imageRotator);
 
 				// randomly generates the location of the next image on the collage within the bounds of the collage
-				x = rand.nextInt(COLLAGE_WIDTH-image.getWidth()*4) + image.getWidth()*2;
-				y = rand.nextInt(COLLAGE_HEIGHT-image.getHeight()*4) + image.getHeight()*2;
+				x = rand.nextInt(COLLAGE_WIDTH) + image.getWidth()*2;
+				y = rand.nextInt(COLLAGE_HEIGHT) + image.getHeight()*2;
+
+				if(x > COLLAGE_WIDTH) {
+					int imageOverflow = x - COLLAGE_WIDTH;
+					x -= imageOverflow;
+					x -= image.getWidth();
+				}
+				if(y > COllAGE_HEIGHT) {
+					int imageOverflow = y - COLLAGE_HEIGHT;
+					y -= imageOverflow;
+					y -= image.getHeight();
+				}
 
 				g.drawImage(image, null, x, y);
 				g.setTransform(backup);
