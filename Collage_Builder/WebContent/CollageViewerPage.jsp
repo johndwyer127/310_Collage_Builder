@@ -6,7 +6,6 @@
 	<html>
 	<% ArrayList<Collage> previousCollage= (ArrayList<Collage>) session.getAttribute("PreviousCollageList"); %>
 	<% Collage mainCollage= (Collage) session.getAttribute("MainCollage");
-		System.out.println("in collageviewerpage.jsp");
 	%>
 		<head>
 			<meta charset="UTF-8">
