@@ -13,37 +13,15 @@
 			<title>Collage Viewer Page</title>
 			<link rel="stylesheet" href="CollageViewerPage.css">
 		</head>
-		<%
-			Collage main = new Collage();
-			main.setTopic("Ming");
-			main.setImage("http://www-scf.usc.edu/~csci201/images/ming_chen.jpg");
-
-			Collage one = new Collage();
-			one.setTopic("Miller");
-			one.setImage("http://www-scf.usc.edu/~csci201/images/nikita_pashintsev.jpg");
-
-			Collage two = new Collage();
-			two.setTopic("Suvir");
-			two.setImage("http://www-scf.usc.edu/~csci201/images/nikita_pashintsev.jpg");
-
-			Collage three = new Collage();
-			three.setTopic("Scott");
-			three.setImage("http://www-scf.usc.edu/~csci201/images/nikita_pashintsev.jpg");
-
-			ArrayList<Collage> previous = new ArrayList<Collage>();
-			previous.add(one);
-			previous.add(two);
-			previous.add(three);
-		%>
 		<script>
 			function switchCollage(elem) {
 				var xhttp = new XMLHttpRequest();
 				var switchCollages = "SwitchCollage.jsp?";
-
-				buttonsPressed += "index=" + elem.id;
-
-				xhttp.open("GET", buttonsPressed, false);
+				switchCollages += "index=" + elem.id;
+				xhttp.open("GET", switchCollages, false);
 	  	  		xhttp.send();
+	  	  		alert("test "+xhttp.responseText);
+	  	  		console.log(xhttp.responseText);
 	  	  		document.getElementById("entirePage").innerHTML = xhttp.responseText;
 			}
 		</script>
@@ -116,10 +94,5 @@
 
 					}
 				</script>
-
-
-
-			</div>
-
 		</body>
 	</html>
