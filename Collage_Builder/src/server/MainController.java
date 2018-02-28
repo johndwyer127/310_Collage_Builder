@@ -31,18 +31,23 @@ public class MainController extends HttpServlet {
     		throws ServletException, IOException  {
 		    	System.out.println("test");
 				String topic = request.getParameter("topic");
+				String first = request.getParameter("first");
 				Collage topicCollage = buildCollage(topic);
 				HttpSession session = request.getSession();
-				if((Collage) session.getAttribute("MainCollage")!=null){
+				System.out.println("first = " + first);
+				if(first.equals("false")){
 					ArrayList<Collage> previousList = (ArrayList<Collage>) session.getAttribute("PreviousCollageList");
 					previousList.add((Collage) session.getAttribute("MainCollage"));
 					session.setAttribute("MainCollage", topicCollage);
+					System.out.println("not first collage made");
 				}
 				else{
 					session.setAttribute("MainCollage", topicCollage);
 					ArrayList<Collage> previousList = new ArrayList<Collage>();
 					session.setAttribute("PreviousCollageList", previousList);
+					System.out.println("first collage made");
 				}
+				response.sendRedirect("CollageViewerPage.jsp");
     }
 
 	//builds collage with String paramater topic

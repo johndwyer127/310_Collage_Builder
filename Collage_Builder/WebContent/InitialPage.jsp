@@ -5,14 +5,25 @@
 <%@ page import = "javax.servlet.RequestDispatcher" %>
 	<html>
 		<script>
+		function sleep(milliseconds) {
+			  var start = new Date().getTime();
+			  for (var i = 0; i < 1e7; i++) {
+			    if ((new Date().getTime() - start) > milliseconds){
+			      break;
+			    }
+			  }
+			}
 			//function to bsend the topic to the back end and build the collage then send the user to the next page
 			function buildCollage() 
 			{
 				console.log("in the function");
 	        		var xhttp = new XMLHttpRequest();
-	        		var url = "MainController?topic="+document.getElementById("topic").value;
+	        		var url = "MainController?topic="+document.getElementById("topic").value+"&first=true";
 	            	xhttp.open("GET", url, true);
 	            	xhttp.send();
+	            	//sleep(10000);
+	            //request.getRequestDispatcher("CollageViewerPage.jsp").forward(request, response);
+	            	return true;
 			}
 			function IsEmpty() {
 				 if(document.getElementById("topic").value == "")
@@ -31,7 +42,7 @@
 		</head>
 		<body>
 			<div class="formDiv">
-				<form class="buildCollageForm" method="GET" onsubmit="buildCollage()" action="CollageViewerPage.jsp">
+				<form class="buildCollageForm" method="GET" onsubmit="return buildCollage()">
 					<input type="text" id="topic" name="topic" class="inputTextForm" oninput="IsEmpty()" placeholder="Enter Topic">
 					<input type="submit" id="submitButton" class = "buildCollageButton" value="Build Collage" disabled>
 				</form>

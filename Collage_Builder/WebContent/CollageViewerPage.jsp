@@ -5,7 +5,9 @@
 <%@ page import = "javax.servlet.http.HttpSession" %>
 	<html>
 	<% ArrayList<Collage> previousCollage= (ArrayList<Collage>) session.getAttribute("PreviousCollageList"); %>
-	<% Collage mainCollage= (Collage) session.getAttribute("MainCollage"); %>
+	<% Collage mainCollage= (Collage) session.getAttribute("MainCollage"); 
+	//System.out.println("main collage topic" + mainCollage.getTopic());
+	%>
 		<head>
 			<meta charset="UTF-8">
 			<title>Collage Viewer Page</title>
@@ -49,11 +51,10 @@
 			//function to send the topic to the back end and build the collage then send the user to the next page
 			function buildCollage() 
 			{
-				console.log("in the function");
-        		var xhttp = new XMLHttpRequest();
-        		var url = "MainController?topic="+document.getElementById("topic").value;
-            	xhttp.open("GET", url, true);
-            	xhttp.send();
+	        		var xhttp = new XMLHttpRequest();
+	        		var url = "MainController?topic="+document.getElementById("topic").value+"&first=false";
+	            	xhttp.open("GET", url, true);
+	            	xhttp.send();
 			}
 			function IsEmpty() {
 				 if(document.getElementById("topic").value == "")
@@ -68,16 +69,16 @@
 		<body>
 			<div id="entirePage">
 				<!-- Title at top of the page -->
-				<h1>Collage For Topic <%= main.getTopic() %></h1>
+				<h1>Collage For Topic <%= mainCollage.getTopic() %></h1>
 				<!-- Div to hold the main collage viewing area -->
 			<div class="MainCollageView">
 				<!-- Div to hold image that populates the main collage viewer area -->
-				<img onclick="exb()" id="mainCollage" src=<%=main.getImage() %> width="100%" height="100%"/>
+				<img onclick="exb()" id="mainCollage" src="data:image/png;base64,<%=mainCollage.getImage()%>" width="100%" height="100%"/>
 			</div>
 			<!-- Div to hold all of the buttons and input fields -->
 			<div class="Inputs">
 				<!-- form that holds the export button -->
-				<a href=<%=main.getImage()%> download>
+				<a href=<%=mainCollage.getImage()%> download>
 				  	<form class="ExportForm">
 						<input type="button" class="buttons" name="Export" value="Export">
 					</form>
@@ -91,8 +92,9 @@
 			</div>
 			<!-- Div to hold the previos collage picker with divs to hold each image -->
 			<div id="container" > <!--  onClick = "changeImage(event)"-->
-			<%for(int i =0; i<previous.size(); i++){ %>
-				 <div id=<%=i %> onclick="switchCollage(this)"><img  src=<%=previous.get(i).getImage()%> width="100%" height="100%" alt="Image Text" /></div>
+			<%
+			for(int i =0; i<previousCollage.size(); i++){ %>
+				 <div id=<%=i %> onclick="switchCollage(this)"><img  src="data:image/png;base64,<%=previousCollage.get(i).getImage()%>" width="100%" height="100%" alt="Image Text" /></div>
 			<%} %>
 			</div>
 			</div>
