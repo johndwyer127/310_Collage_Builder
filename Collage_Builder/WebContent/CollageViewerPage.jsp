@@ -6,6 +6,7 @@
 	<html>
 	<% ArrayList<Collage> previousCollage= (ArrayList<Collage>) session.getAttribute("PreviousCollageList"); %>
 	<% Collage mainCollage= (Collage) session.getAttribute("MainCollage");
+		System.out.println("in collageviewerpage.jsp");
 	%>
 		<head>
 			<meta charset="UTF-8">
@@ -13,26 +14,26 @@
 			<link rel="stylesheet" href="CollageViewerPage.css">
 		</head>
 		<%
-		Collage main = new Collage();
-		main.setTopic("Ming");
-		main.setImage("http://www-scf.usc.edu/~csci201/images/ming_chen.jpg");
+			Collage main = new Collage();
+			main.setTopic("Ming");
+			main.setImage("http://www-scf.usc.edu/~csci201/images/ming_chen.jpg");
 
-		Collage one = new Collage();
-		one.setTopic("Miller");
-		one.setImage("http://www-scf.usc.edu/~csci201/images/nikita_pashintsev.jpg");
+			Collage one = new Collage();
+			one.setTopic("Miller");
+			one.setImage("http://www-scf.usc.edu/~csci201/images/nikita_pashintsev.jpg");
 
-		Collage two = new Collage();
-		two.setTopic("Suvir");
-		two.setImage("http://www-scf.usc.edu/~csci201/images/nikita_pashintsev.jpg");
+			Collage two = new Collage();
+			two.setTopic("Suvir");
+			two.setImage("http://www-scf.usc.edu/~csci201/images/nikita_pashintsev.jpg");
 
-		Collage three = new Collage();
-		three.setTopic("Scott");
-		three.setImage("http://www-scf.usc.edu/~csci201/images/nikita_pashintsev.jpg");
+			Collage three = new Collage();
+			three.setTopic("Scott");
+			three.setImage("http://www-scf.usc.edu/~csci201/images/nikita_pashintsev.jpg");
 
-		ArrayList<Collage> previous = new ArrayList<Collage>();
-		previous.add(one);
-		previous.add(two);
-		previous.add(three);
+			ArrayList<Collage> previous = new ArrayList<Collage>();
+			previous.add(one);
+			previous.add(two);
+			previous.add(three);
 		%>
 		<script>
 			function switchCollage(elem) {
@@ -77,7 +78,7 @@
 			<!-- Div to hold all of the buttons and input fields -->
 			<div class="Inputs">
 				<!-- form that holds the export button -->
-				<a href=<%=mainCollage.getImage()%> download>
+				<a href="data:image/png;base64,<%=mainCollage.getImage()%>" download="test.png">
 				  	<form class="ExportForm">
 						<input type="button" class="buttons" name="Export" value="Export">
 					</form>
@@ -92,7 +93,9 @@
 			<!-- Div to hold the previos collage picker with divs to hold each image -->
 			<div id="container" > <!--  onClick = "changeImage(event)"-->
 			<%
-			for(int i =0; i<previousCollage.size(); i++){ %>
+			for(int i =0; i<previousCollage.size(); i++){
+				System.out.println("size of previous collage list: " + previousCollage.size());
+			%>
 				 <div id=<%=i %> onclick="switchCollage(this)"><img  src="data:image/png;base64,<%=previousCollage.get(i).getImage()%>" width="100%" height="100%" alt="Image Text" /></div>
 			<%} %>
 			</div>
