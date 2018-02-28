@@ -5,8 +5,6 @@ public class Collage {
 	private String topic;
 	private String image;
 
-
-
 	//reuturns collage topic
 	public String getTopic(){
 		return topic;
@@ -25,6 +23,5 @@ public class Collage {
 	public void setImage(String i){
 		image = i;
 	}
-
-
+	
 }

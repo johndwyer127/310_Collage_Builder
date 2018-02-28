@@ -1,6 +1,5 @@
 package server;
 
-
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
@@ -35,6 +34,8 @@ public class ImageTransform {
 	private static final int COLLAGE_HEIGHT = 600;
 	private static final int COLLAGE_SIZE = COLLAGE_WIDTH * COLLAGE_HEIGHT; // total number of pixels
 	private static final int SCALED_IMAGE_SIZE = COLLAGE_SIZE/20;
+	private static final int TOTAL_COMBINED_AREA = SCALED_IMAGE_SIZE*30;
+	private static final int FINAL_FOREGROUND_IMAGE_SIZE = (TOTAL_COMBINED_AREA-COLLAGE_SIZE)/29;
 	private static final String GOOGLE_SEARCH_API_KEY = "AIzaSyCQbxRMKMxuyaIVmosCa_k2sIv5BeavGFs";
 //	private static final String GOOGLE_SEARCH_API_KEY = "AIzaSyADYi8Ob0jmPJbGEMCkJwrB31bOY80RtXs";
 //	private static final String GOOGLE_SEARCH_API_KEY = "AIzaSyAh8tNso-_G-0h5DCft0JibbpPyLYhIPvE";
@@ -75,20 +76,17 @@ public class ImageTransform {
 				BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
 
 				String output;
-				System.out.println("Output from search: .... \n");
 
 				// parse through JSON response for image links, line by line
 				while((output = reader.readLine()) != null) {
 					if(output.contains("\"link\": \"")) {
 						String link = output.substring(output.indexOf("\"link\": \"") + ("\"link\": \"").length(), output.indexOf("\","));
-						System.out.println(link);
 						URL imageURL = new URL(link);
 						try {
 							BufferedImage resultImage = (BufferedImage) ImageIO.read(imageURL);
 							this.retrievedImages.add(resultImage);
-							System.out.println("addedImage: current size: " + this.retrievedImages.size());
 						} catch(IIOException e) {
-							System.out.println("bad link");
+							System.out.println("Bad link/unable to generate buffered image from a url!");
 						}
 					}
 				}
@@ -102,13 +100,13 @@ public class ImageTransform {
 			e.printStackTrace();
 		}
 
-		System.out.println("returning fetched images");
 		return validateRetrievedImages();
 	}
 
 	private boolean validateRetrievedImages() {
 		// verify there are no null images
 		int numImages = this.retrievedImages.size();
+		// remove any null images (links that blocked us)
 		for(int i = 0; i < numImages; i++) {
 			if(this.retrievedImages.get(i) == null) {
 				this.retrievedImages.remove(i);
@@ -119,7 +117,7 @@ public class ImageTransform {
 
 		// not enough images
 		if(this.retrievedImages.size() < 30) {
-			System.out.println("was unable to find enough pictures! current size: " + this.retrievedImages.size());
+			System.out.println("Was unable to find enough pictures! current size: " + this.retrievedImages.size());
 			this.retrievedImages.clear();
 			return false;
 		}
@@ -129,20 +127,19 @@ public class ImageTransform {
 			while(this.retrievedImages.size() > 30) {
 				this.retrievedImages.remove(this.retrievedImages.size()-1);
 			}
-			System.out.println("got necessary images and trimmed list, current size: " + this.retrievedImages.size());
+			System.out.println("Retrieved necessary images and trimmed list, current size: " + this.retrievedImages.size());
 			return true;
 		}
 	}
 
+	// generate url to make request to our Google custom search engine
 	private URL generateRequestURL(int resultNumber) throws MalformedURLException {
 		URL requestURL;
 		if(resultNumber > 0) {
 			requestURL = new URL("https://www.googleapis.com/customsearch/v1?key=" + GOOGLE_SEARCH_API_KEY + "&cx=" + GOOGLE_CX + "&q=" + this.topic + "&searchType=image&imgType=photo&imgSize=medium&start=" + resultNumber + "&num=10");
-//			requestURL = new URL("https://www.googleapis.com/customsearch/v1?key=" + GOOGLE_SEARCH_API_KEY + "&cx=" + GOOGLE_CX + "&q=" + this.topic + "&searchType=image&start=" + resultNumber + "&num=10");
 		}
 		else {
 			requestURL = new URL("https://www.googleapis.com/customsearch/v1?key=" + GOOGLE_SEARCH_API_KEY + "&cx=" + GOOGLE_CX + "&q=" + topic + "&searchType=image&imgType=photo&imgSize=medium&num=10");
-//			requestURL = new URL("https://www.googleapis.com/customsearch/v1?key=" + GOOGLE_SEARCH_API_KEY + "&cx=" + GOOGLE_CX + "&q=" + topic + "&searchType=image&num=10");
 		}
 
 		return requestURL;
@@ -158,7 +155,8 @@ public class ImageTransform {
 			int originalWidth = originalImage.getWidth();
 			int originalHeight = originalImage.getHeight();
 			int originalImageSize = originalWidth * originalHeight;
-			double scaleFactor = originalImageSize/SCALED_IMAGE_SIZE;
+			// determines scale factor such that the average sizes of the images is 1/20th of COLLAGE_SIZE
+			double scaleFactor = originalImageSize/FINAL_FOREGROUND_IMAGE_SIZE;
 
 			if(scaleFactor == 0) {
 				scaleFactor = 1;
@@ -170,7 +168,6 @@ public class ImageTransform {
 			double scaledHeight = (originalHeight/scaleFactor);
 
 			Image tmp = originalImage.getScaledInstance((int)scaledWidth, (int)scaledHeight, Image.SCALE_SMOOTH);
-			System.out.println("originalWidth: " + originalWidth + ", originalHeight: " + originalHeight + " , scaledWidth: " + scaledWidth + ", scaledHeight: " + scaledHeight);
 			BufferedImage resizedImage = new BufferedImage((int)scaledWidth, (int)scaledHeight, BufferedImage.TYPE_INT_ARGB);
 
 			Graphics2D g2d = resizedImage.createGraphics();
@@ -195,13 +192,14 @@ public class ImageTransform {
 		return angle;
 	}
 
-	// add 3px white frame around each image
-	// taken from: https://stackoverflow.com/questions/4219511/draw-rectangle-border-thickness
+	// adds 3px white frame around each image
+	// see: https://stackoverflow.com/questions/4219511/draw-rectangle-border-thickness
 	private void borderImages() {
 		for(BufferedImage image : retrievedImages) {
 			Graphics2D g2d = image.createGraphics();
 			int height = image.getHeight();
 			int width = image.getWidth();
+			// sets border width to 3 pixels
 			int borderWidth = 3;
 			int borderControl = 1;
 			g2d.setColor(Color.WHITE);
@@ -240,13 +238,26 @@ public class ImageTransform {
 				imageRotator.rotate(Math.toRadians(rotationAmount), image.getWidth()/2, image.getHeight()/2);
 
 				g.transform(imageRotator);
+
+				// randomly generates the location of the next image on the collage
 				x = rand.nextInt(COLLAGE_WIDTH);
 				y = rand.nextInt(COLLAGE_HEIGHT);
+
+				// checks if randomly generated location is outside of collage bounds and adjusts if so
+				if(x + image.getWidth() > COLLAGE_WIDTH) {
+					int imageOverflow = x + image.getWidth() - COLLAGE_WIDTH;
+					x -= imageOverflow;
+				}
+				if(y + image.getHeight() > COLLAGE_HEIGHT) {
+					int imageOverflow = y + image.getHeight() - COLLAGE_HEIGHT;
+					y -= imageOverflow;
+				}
+
+				// draws rotated image onto the collage canvas/backdrop
 				g.drawImage(image, x, y, null);
 				g.setTransform(backup);
 			}
 
-			System.out.println("imageNum: " + imageNum + ", currY: " + y + ", currX: " + x);
 			imageNum++;
 		}
 		try {
@@ -262,10 +273,12 @@ public class ImageTransform {
 	private BufferedImage generateInsufficientNumberImage() {
 		BufferedImage insufficentNumberImage = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
         Graphics2D imageGraphicsManipulator = insufficentNumberImage.createGraphics();
+				// setting font size to 18
         Font imageFont = new Font("Arial", Font.PLAIN, 18);
         imageGraphicsManipulator.setFont(imageFont);
         imageGraphicsManipulator.dispose();
 
+				// setting presets for the Graphics2D object to be able to write the image
         insufficentNumberImage = new BufferedImage(COLLAGE_WIDTH, COLLAGE_HEIGHT, BufferedImage.TYPE_INT_ARGB);
         imageGraphicsManipulator = insufficentNumberImage.createGraphics();
         imageGraphicsManipulator.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION, RenderingHints.VALUE_ALPHA_INTERPOLATION_QUALITY);
@@ -283,20 +296,16 @@ public class ImageTransform {
         imageGraphicsManipulator.drawString("Insufficient number of images found", 445, COLLAGE_HEIGHT/2);
         imageGraphicsManipulator.dispose();
 
-        try {
-            ImageIO.write(insufficentNumberImage, "png", new File("Text.png"));
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
-
         return insufficentNumberImage;
 
     }
 
+		// accessor method to return the retrieved images from Google/modified images at any point
 	public List<BufferedImage> getRetrievedImages() {
 		return this.retrievedImages;
 	}
 
+	// accessor method to return the complete collage image as a buffered image
 	public BufferedImage getCompleteImage() {
 		return this.completeImage;
 	}
