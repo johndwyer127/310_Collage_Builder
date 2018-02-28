@@ -31,7 +31,7 @@
 			{
 	        		var xhttp = new XMLHttpRequest();
 	        		var url = "MainController?topic="+document.getElementById("topic").value+"&first=false";
-	            	xhttp.open("GET", url, true);
+	            	xhttp.open("GET", url, false);
 	            	xhttp.send();
 			}
 			function IsEmpty() {

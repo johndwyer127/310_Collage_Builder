@@ -26,7 +26,7 @@
 			<!-- Div to hold all of the buttons and input fields -->
 			<div class="Inputs">
 				<!-- form that holds the export button -->
-				<a href=<%=mainCollage.getImage()%> download>
+				<a href="data:image/png;base64,<%=mainCollage.getImage()%>" download="test.png">
 				  	<form class="ExportForm">
 						<input type="button" class="buttons" name="Export" value="Export">
 					</form>
