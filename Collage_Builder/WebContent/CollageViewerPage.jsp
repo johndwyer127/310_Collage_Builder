@@ -5,8 +5,7 @@
 <%@ page import = "javax.servlet.http.HttpSession" %>
 	<html>
 	<% ArrayList<Collage> previousCollage= (ArrayList<Collage>) session.getAttribute("PreviousCollageList"); %>
-	<% Collage mainCollage= (Collage) session.getAttribute("MainCollage"); 
-	//System.out.println("main collage topic" + mainCollage.getTopic());
+	<% Collage mainCollage= (Collage) session.getAttribute("MainCollage");
 	%>
 		<head>
 			<meta charset="UTF-8">
@@ -17,19 +16,19 @@
 		Collage main = new Collage();
 		main.setTopic("Ming");
 		main.setImage("http://www-scf.usc.edu/~csci201/images/ming_chen.jpg");
-		
+
 		Collage one = new Collage();
 		one.setTopic("Miller");
 		one.setImage("http://www-scf.usc.edu/~csci201/images/nikita_pashintsev.jpg");
-		
+
 		Collage two = new Collage();
 		two.setTopic("Suvir");
 		two.setImage("http://www-scf.usc.edu/~csci201/images/nikita_pashintsev.jpg");
-		
+
 		Collage three = new Collage();
 		three.setTopic("Scott");
 		three.setImage("http://www-scf.usc.edu/~csci201/images/nikita_pashintsev.jpg");
-		
+
 		ArrayList<Collage> previous = new ArrayList<Collage>();
 		previous.add(one);
 		previous.add(two);
@@ -39,9 +38,9 @@
 			function switchCollage(elem) {
 				var xhttp = new XMLHttpRequest();
 				var switchCollages = "SwitchCollage.jsp?";
-				 
+
 				buttonsPressed += "index=" + elem.id;
-	  	  		 
+
 				xhttp.open("GET", buttonsPressed, false);
 	  	  		xhttp.send();
 	  	  		document.getElementById("entirePage").innerHTML = xhttp.responseText;
@@ -49,7 +48,7 @@
 		</script>
 		<script>
 			//function to send the topic to the back end and build the collage then send the user to the next page
-			function buildCollage() 
+			function buildCollage()
 			{
 	        		var xhttp = new XMLHttpRequest();
 	        		var url = "MainController?topic="+document.getElementById("topic").value+"&first=false";
@@ -63,7 +62,7 @@
 	             }else{
 	            	 	document.getElementById("submitButton").disabled = false;
 	             }
-			    
+
 			}
 		</script>
 		<body>
@@ -83,7 +82,7 @@
 						<input type="button" class="buttons" name="Export" value="Export">
 					</form>
 				</a>
-				
+
 				<!-- form that holds the build another collage inputs including the text field and the build another collage button -->
 				<form class="BuildAnotherCollageForm">
 					<input type="text" name="topic" placeholder="Enter Topic" oninput="IsEmpty()"  disable onsubmit="buildCollage()">
@@ -116,8 +115,8 @@
 				</script>
 
 
-    		
+
 			</div>
-			
+
 		</body>
 	</html>
