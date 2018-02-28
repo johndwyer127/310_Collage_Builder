@@ -4,8 +4,9 @@
 <%@ page import = "javax.servlet.http.HttpSession" %>
 
 <%
+	//this code switches the collage object that was selected with the one in the main collage space
 	String index = request.getParameter("index");
-	System.out.println("index = "+Integer.parseInt(index));
+
 	ArrayList<Collage> previousCollage = (ArrayList<Collage>) session.getAttribute("PreviousCollageList");
 	Collage mainCollage= (Collage) session.getAttribute("MainCollage");
 	
@@ -16,9 +17,10 @@
 	session.setAttribute("PreviousCollageList", previousCollage);
 	session.setAttribute("MainCollage", mainCollage);
 %>
-<!-- Title at top of the page -->
-				<h1>Collage For Topic <%= mainCollage.getTopic() %></h1>
-				<!-- Div to hold the main collage viewing area -->
+			<!-- this is the inner html that is retruned after the switch -->
+			<!-- Title at top of the page -->
+			<h1>Collage For Topic <%= mainCollage.getTopic() %></h1>
+			<!-- Div to hold the main collage viewing area -->
 			<div class="MainCollageView">
 				<!-- Div to hold image that populates the main collage viewer area -->
 				<div id="mainCollageSpace"><img onclick="exb()" id="mainCollage" src="data:image/png;charset=utf-8;base64,<%=mainCollage.getImage() %>" width="100%" height="100%" alt="Iage Text" /></div>
@@ -28,7 +30,7 @@
 				<!-- form that holds the export button -->
 				<a href="data:image/png;base64,<%=mainCollage.getImage()%>" download="test.png">
 				  	<form class="ExportForm">
-						<input type="button" class="buttons" name="Export" value="Export">
+						<input type="button" class="buttons" name="Export" value="Export Collage">
 					</form>
 				</a>
 				
