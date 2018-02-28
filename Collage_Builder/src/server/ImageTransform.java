@@ -36,11 +36,11 @@ public class ImageTransform {
 	private static final int COLLAGE_SIZE = COLLAGE_WIDTH * COLLAGE_HEIGHT; // total number of pixels
 	private static final int SCALED_IMAGE_SIZE = COLLAGE_SIZE/20;
 //	private static final String GOOGLE_SEARCH_API_KEY = "AIzaSyCQbxRMKMxuyaIVmosCa_k2sIv5BeavGFs";
-//	private static final String GOOGLE_SEARCH_API_KEY = "AIzaSyADYi8Ob0jmPJbGEMCkJwrB31bOY80RtXs";
-	private static final String GOOGLE_SEARCH_API_KEY = "AIzaSyAh8tNso-_G-0h5DCft0JibbpPyLYhIPvE";
+	private static final String GOOGLE_SEARCH_API_KEY = "AIzaSyADYi8Ob0jmPJbGEMCkJwrB31bOY80RtXs";
+//	private static final String GOOGLE_SEARCH_API_KEY = "AIzaSyAh8tNso-_G-0h5DCft0JibbpPyLYhIPvE";
 //	private static final String GOOGLE_CX = "007628912923159165220:9e6kozm2iea";	// custom search engine identifier
-//	private static final String GOOGLE_CX = "008543189839369971484:b8selplq7z8";	// custom search engine identifier
-	private static final String GOOGLE_CX = "003847142776988134030:4xa5elxfuke";	// custom search engine identifier
+	private static final String GOOGLE_CX = "008543189839369971484:b8selplq7z8";	// custom search engine identifier
+//	private static final String GOOGLE_CX = "003847142776988134030:4xa5elxfuke";	// custom search engine identifier
 
 	public ImageTransform(String t) {
 		this.topic = t;
