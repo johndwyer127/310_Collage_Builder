@@ -11,7 +11,7 @@ body {
     width: 97%;
     height: 50%;
     text-align: center;
-    position: absolute;               
+    position: relative;
    	top: 10%;
    	border: solid black;
    	min-height: 600px;
@@ -22,9 +22,9 @@ body {
     width: 97%;
     height: 15%;
     text-align: center;
-    position: absolute;               
+    position: relative;
    	top: 60%;
-   	border: solid blue;
+   	border: solid black;
 }
 .PreviousCollageViewer{
 	margin: auto;
@@ -69,7 +69,7 @@ input.buttons{
   overflow-x: auto;
   overflow-y: hidden;
   vertical-align:middle;
-  position: absolute;               
+  position: relative;
    	top: 75%;
    	width: 97%;
 }
