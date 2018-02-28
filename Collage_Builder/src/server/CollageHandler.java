@@ -20,10 +20,10 @@ public class CollageHandler {
 	//builds collage with ImageTransform object and returns Collage object
 	public Collage build(){
 		imageTransformer = new ImageTransform(topic);
-		imageTransformer.createCollageImage();
+		BufferedImage completeCollage = imageTransformer.createCollageImage();
 		Collage c = new Collage();
 		c.setTopic(topic);
-		c.setImage(convertBufferedImageToBase64(imageTransformer.getCompleteImage()));
+		c.setImage(convertBufferedImageToBase64(completeCollage));
 		return c;
 	}
 

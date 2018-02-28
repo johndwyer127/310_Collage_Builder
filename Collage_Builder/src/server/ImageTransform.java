@@ -251,6 +251,7 @@ public class ImageTransform {
 		} catch(IOException e) {
 			e.getMessage();
 		}
+		this.completeImage = collageImage;
 		return collageImage;
 	}
 
