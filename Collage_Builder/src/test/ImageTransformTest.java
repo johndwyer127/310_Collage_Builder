@@ -148,6 +148,24 @@ public class ImageTransformTest {
 			assertEquals(correctWidth, resizedImage.getWidth());
 		}
 	}
+
+	@Test
+	public void testCombineImages() {
+		ImageTransform imageTransform = new ImageTransform();
+		
+		List<BufferedImage> testImages = new ArrayList<BufferedImage>();
+		
+		for(int i = 0; i < 31; i++) {
+			BufferedImage testImage = createFixedSizeBufferedImage();
+			testImages.add(testImage);
+		}
+
+		imageTransform.setRetrievedImages(testImages);
+		
+		BufferedImage collage = imageTransform.combineImages();
+
+		assertThat(collage, instanceOf(BufferedImage.class));
+	}
 	
 	private BufferedImage createFixedSizeBufferedImage() {
 		return new BufferedImage(500, 500, BufferedImage.TYPE_INT_ARGB);
