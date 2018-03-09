@@ -18,6 +18,7 @@ import server.MainController;
 
 public class MainControllerTest {
     
+	//tests doGet function to make sure we set everything to the session
 	@Test
     public void testDoGet() {  
         HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
@@ -47,7 +48,7 @@ public class MainControllerTest {
         
     }
 	
-	
+	//tests doPost function to make sure we set everything to the session and forward to the next page
     @Test
     public void testDoPost() {
         HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
@@ -78,6 +79,7 @@ public class MainControllerTest {
         
     }
     
+    //tests buildCollage funcution to make sure it returns a collage object
     @Test
     public void testBuildCollage() {
     		MainController mainController = new MainController();
@@ -89,6 +91,7 @@ public class MainControllerTest {
     		assertThat(producedCollage, instanceOf(Collage.class));
     }
     
+    //tests code in createNewListForTesting to make sure that it returns an arraylist
     @Test
     public void testCreateNewListForTesting() {
     		MainController mainController = new MainController();
@@ -96,13 +99,12 @@ public class MainControllerTest {
     		assertThat(previousCollageList, instanceOf(ArrayList.class));
     }
     
-    // don't know how the FUCK to do this one...
+    //runs code in getPreviousCollageList
     @Test
-    public void testPreviousCollageList() {
+    public void testGetPreviousCollageList() {
     		MainController mainController = new MainController();
     		HttpSession session = Mockito.mock(HttpSession.class);
     		ArrayList<Collage> previousCollageList = mainController.getPreviousCollageList(session);
-//    		assertThat(previousCollageList, instanceOf(ArrayList.class));
     }
 
 }

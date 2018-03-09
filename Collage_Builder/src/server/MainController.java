@@ -35,16 +35,11 @@ public class MainController extends HttpServlet {
 				Collage topicCollage = buildCollage(topic);
 				HttpSession session = request.getSession();
 				
-					ArrayList<Collage> previousList = (ArrayList<Collage>) session.getAttribute("PreviousCollageList");
+					ArrayList<Collage> previousList = getPreviousCollageList(session);
 					previousList.add((Collage) session.getAttribute("MainCollage"));
 					session.setAttribute("MainCollage", topicCollage);
-					request.getRequestDispatcher("CollageViewerPage.jsp").forward(request, response);
+					request.getRequestDispatcher("/CollageViewerPage.jsp").forward(request, response);
 			
-
-				ServletContext sc = this.getServletContext();
-				RequestDispatcher rd = sc.getRequestDispatcher("/CollageViewerPage.jsp");
-				rd.include(request, response);
-
 				return;
     }
 
@@ -54,11 +49,11 @@ public class MainController extends HttpServlet {
 				Collage topicCollage = buildCollage(topic);
 				HttpSession session = request.getSession();
 
-					session.setAttribute("MainCollage", topicCollage);
-					ArrayList<Collage> previousList = new ArrayList<Collage>();
-					session.setAttribute("PreviousCollageList", previousList);
+				session.setAttribute("MainCollage", topicCollage);
+				ArrayList<Collage> previousList = createNewListForTesting();
+				session.setAttribute("PreviousCollageList", previousList);
 
-				RequestDispatcher view = getServletContext().getRequestDispatcher("/CollageViewerPage.jsp");
+				RequestDispatcher view = request.getRequestDispatcher("/CollageViewerPage.jsp");
 				view.forward(request, response);
 
 				return;
@@ -70,5 +65,17 @@ public class MainController extends HttpServlet {
 		Collage c = ch.build();
 		return c;
 
+	}
+	
+	public ArrayList<Collage> createNewListForTesting() {
+		ArrayList<Collage> testList = new ArrayList<Collage>();
+		return testList;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public ArrayList<Collage> getPreviousCollageList(HttpSession session) {
+		ArrayList<Collage> previousCollageList = new ArrayList<Collage>();
+		previousCollageList = (ArrayList<Collage>) session.getAttribute("PreviousCollageList");
+		return previousCollageList;
 	}
 }

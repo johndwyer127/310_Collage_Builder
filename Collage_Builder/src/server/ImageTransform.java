@@ -35,13 +35,13 @@ public class ImageTransform {
 	private static final int TOTAL_COMBINED_AREA = SCALED_IMAGE_SIZE*30;
 	private static final int FINAL_FOREGROUND_IMAGE_SIZE = (TOTAL_COMBINED_AREA-COLLAGE_SIZE)/29;
 //	private static final String GOOGLE_SEARCH_API_KEY = "AIzaSyCQbxRMKMxuyaIVmosCa_k2sIv5BeavGFs";
-	private static final String GOOGLE_SEARCH_API_KEY = "AIzaSyADYi8Ob0jmPJbGEMCkJwrB31bOY80RtXs";
+//	private static final String GOOGLE_SEARCH_API_KEY = "AIzaSyADYi8Ob0jmPJbGEMCkJwrB31bOY80RtXs";
 //	private static final String GOOGLE_SEARCH_API_KEY = "AIzaSyAh8tNso-_G-0h5DCft0JibbpPyLYhIPvE";
-//	private static final String GOOGLE_SEARCH_API_KEY = "AIzaSyB7_yytK04B7speZc4lXsHLr9ARmwPiUzw";
+	private static final String GOOGLE_SEARCH_API_KEY = "AIzaSyB7_yytK04B7speZc4lXsHLr9ARmwPiUzw";
 //	private static final String GOOGLE_CX = "007628912923159165220:9e6kozm2iea";	// custom search engine identifier
-	private static final String GOOGLE_CX = "008543189839369971484:b8selplq7z8";	// custom search engine identifier
+//	private static final String GOOGLE_CX = "008543189839369971484:b8selplq7z8";	// custom search engine identifier
 //	private static final String GOOGLE_CX = "003847142776988134030:4xa5elxfuke";	// custom search engine identifier
-//	private static final String GOOGLE_CX = "015527610641952349258:lx1x9pjo0ec";
+	private static final String GOOGLE_CX = "015527610641952349258:lx1x9pjo0ec";
 
 
 	public ImageTransform(String t) {

@@ -33,7 +33,6 @@ public class CollageHandler {
 		String type = "png";
 		String imageString = null;
 		ByteArrayOutputStream bos = new ByteArrayOutputStream();
-
 		try {
 			// writes bufferedImage to a string
 			ImageIO.write(image, type, Base64.getEncoder().wrap(bos));

@@ -6,14 +6,18 @@ import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Base64;
 
 import javax.imageio.ImageIO;
 
 import org.junit.Test;
+import org.mockito.Mockito;
+
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.junit.Assert.assertThat;
 
@@ -32,15 +36,6 @@ public class CollageHandlerTest {
 		CollageHandler collageHandler = new CollageHandler("test");
 		assertThat(collageHandler, instanceOf(CollageHandler.class));
 	}
-	
-	
-	// tests the CollageHandler class's wrapper method around generating a Collage object given a topic String
-	// TODO: mock out ImageTransform??
-	@Test
-	public void testBuild() {
-		
-	}
-	
 	
 	// tests the CollageHandler class's method to encode BufferedImage objects as base64 encoded Strings
 	@Test
@@ -108,12 +103,17 @@ public class CollageHandlerTest {
         	File fileImage = new File("insufficientNumberImage.png");
         	ImageIO.write(insufficentNumberImage, "png", fileImage);
         } catch (IOException e) {
-        	System.out.println("yo");
+        		System.out.println("e IOException");
         }
 
         return insufficentNumberImage;
 
     }
+	
+	@Test
+	public void testThrowConvertBufferedImageToBase64() {
+		CollageHandler ch = Mockito.mock(CollageHandler.class);
+	}
 	
 
 }

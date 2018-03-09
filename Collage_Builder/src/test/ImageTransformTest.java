@@ -9,6 +9,7 @@ import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -23,12 +24,13 @@ import java.util.List;
 import org.junit.Test;
 import org.mockito.Mockito;
 
+import server.CollageHandler;
 import server.ImageTransform;
 
 public class ImageTransformTest {
-
-	private static final String GOOGLE_SEARCH_API_KEY = "AIzaSyADYi8Ob0jmPJbGEMCkJwrB31bOY80RtXs";
-	private static final String GOOGLE_CX = "008543189839369971484:b8selplq7z8";	// custom search engine identifier
+	private static final String FILE_NAME = "insufficientNumberImage.txt";
+	private static final String GOOGLE_SEARCH_API_KEY = "AIzaSyB7_yytK04B7speZc4lXsHLr9ARmwPiUzw";
+	private static final String GOOGLE_CX = "015527610641952349258:lx1x9pjo0ec";	// custom search engine identifier
 
 	// tests that the constructor of the ImageTransform class creates a list field
 	@Test
@@ -53,14 +55,14 @@ public class ImageTransformTest {
 		assertEquals(returnedBufferedImage, insufficientNumberImage);
 	}
 
+	//tests fetchImages by running fetchimages and mocks external google search functionality
 	@Test
 	public void testFetchImages() throws IOException {
 		ImageTransform imageTransform = new ImageTransform("test");
 		ImageTransform imageTransformSpy = Mockito.spy(imageTransform);
 		URL testURL = new URL("http://www.google.com");
 		HttpURLConnection testConnection = (HttpURLConnection) testURL.openConnection();
-		InputStream mockInputStream = Mockito.mock(InputStream.class);
-		InputStreamReader mockInputStreamReader = Mockito.mock(InputStreamReader.class);
+		
 		PrintWriter writer = new PrintWriter("fakeLinks.txt", "UTF-8");
 		writer.println("test.com");
 		writer.println("test2.com");
@@ -123,6 +125,7 @@ public class ImageTransformTest {
 		assertEquals(30, imageTransform.getRetrievedImages().size());
 	}
 
+	//tests the generateRequestURLResultNumberZero to make sure the url that is generated is a valid url
 	@Test
 	public void testGenerateRequestURLResultNumberZero() throws MalformedURLException{
 		ImageTransform imageTransform = new ImageTransform("test");
@@ -133,6 +136,7 @@ public class ImageTransformTest {
 		assertEquals(validURL, urlStringGenerated);
 	}
 
+	//tests generateRequestURLResultNumberNotZero function to make sure the url generated is valid
 	@Test
 	public void testGenerateRequestURLResultNumberNotZero() throws MalformedURLException{
 		ImageTransform imageTransform = new ImageTransform("test");
@@ -143,12 +147,14 @@ public class ImageTransformTest {
 		assertEquals(validURL, urlStringGenerated);
 	}
 
+	//tests the exception throw by generateRequestURLMalformedURLException by making the url not formed correctly
 	@Test(expected = MalformedURLException.class)
 	public void testGenerateRequestURLMalformedURLException() throws MalformedURLException {
 		ImageTransform imageTransform = new ImageTransform("test");
 		URL requestURL = imageTransform.generateRequestURL(10, "ppp");
 	}
 
+	//test the generateRotationAmount function by running it 100 times and making sure it is within the -45 to 45 range
 	@Test
     public void generateRotationAmountTester() {
         ImageTransform it = new ImageTransform("test");
@@ -159,50 +165,52 @@ public class ImageTransformTest {
 
     }
 
-		@Test
-	    public void testBorderImage() {
-        	ImageTransform it = new ImageTransform("Topic");
+	//tests borderImage function by creating a black image and testing its 4 corners berfore and after calling the function and making sure that before they are bblack and after they are white
+	@Test
+	public void testBorderImage() {
+    ImageTransform it = new ImageTransform("Topic");
 
-	        BufferedImage startImage = new BufferedImage(100, 200, BufferedImage.TYPE_INT_ARGB);
-	        Graphics2D imageGraphicsManipulator = startImage.createGraphics();
-	       imageGraphicsManipulator = startImage.createGraphics();
-	       imageGraphicsManipulator.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION, RenderingHints.VALUE_ALPHA_INTERPOLATION_QUALITY);
-	       imageGraphicsManipulator.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-	       imageGraphicsManipulator.setRenderingHint(RenderingHints.KEY_COLOR_RENDERING, RenderingHints.VALUE_COLOR_RENDER_QUALITY);
-	       imageGraphicsManipulator.setRenderingHint(RenderingHints.KEY_DITHERING, RenderingHints.VALUE_DITHER_ENABLE);
-	       imageGraphicsManipulator.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS, RenderingHints.VALUE_FRACTIONALMETRICS_ON);
-	       imageGraphicsManipulator.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
-	       imageGraphicsManipulator.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
-	       imageGraphicsManipulator.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_PURE);
-	       imageGraphicsManipulator.setPaint(Color.BLACK);
-	       imageGraphicsManipulator.fillRect(0, 0, 100, 200);
+       BufferedImage startImage = new BufferedImage(100, 200, BufferedImage.TYPE_INT_ARGB);
+       Graphics2D imageGraphicsManipulator = startImage.createGraphics();
+       imageGraphicsManipulator = startImage.createGraphics();
+       imageGraphicsManipulator.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION, RenderingHints.VALUE_ALPHA_INTERPOLATION_QUALITY);
+       imageGraphicsManipulator.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+       imageGraphicsManipulator.setRenderingHint(RenderingHints.KEY_COLOR_RENDERING, RenderingHints.VALUE_COLOR_RENDER_QUALITY);
+       imageGraphicsManipulator.setRenderingHint(RenderingHints.KEY_DITHERING, RenderingHints.VALUE_DITHER_ENABLE);
+       imageGraphicsManipulator.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS, RenderingHints.VALUE_FRACTIONALMETRICS_ON);
+       imageGraphicsManipulator.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+       imageGraphicsManipulator.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+       imageGraphicsManipulator.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_PURE);
+       imageGraphicsManipulator.setPaint(Color.BLACK);
+       imageGraphicsManipulator.fillRect(0, 0, 100, 200);
 
 
-	       Color topLeftOrgNonBordered = new Color(startImage.getRGB(0, 0));
-	        Color topRightOrgNonBordered =  new Color(startImage.getRGB(startImage.getWidth()-1, 0));
-	        Color bottomRightOrgNonBordered =  new Color(startImage.getRGB(0, startImage.getHeight()-1));
-	        Color bottomLeftOrgNonBordered =  new Color(startImage.getRGB(startImage.getWidth()-1, startImage.getHeight()-1));
+       Color topLeftOrgNonBordered = new Color(startImage.getRGB(0, 0));
+        Color topRightOrgNonBordered =  new Color(startImage.getRGB(startImage.getWidth()-1, 0));
+        Color bottomRightOrgNonBordered =  new Color(startImage.getRGB(0, startImage.getHeight()-1));
+        Color bottomLeftOrgNonBordered =  new Color(startImage.getRGB(startImage.getWidth()-1, startImage.getHeight()-1));
 
-	        it.borderImage(startImage);
+        it.borderImage(startImage);
 
-	        Color topLeftOrgBordered = new Color(startImage.getRGB(0, 0));
-	        Color topRightOrgBordered =  new Color(startImage.getRGB(startImage.getWidth()-1, 0));
-	        Color bottomRightOrgBordered =  new Color(startImage.getRGB(0, startImage.getHeight()-1));
-	        Color bottomLeftOrgBordered =  new Color(startImage.getRGB(startImage.getWidth()-1, startImage.getHeight()-1));
+        Color topLeftOrgBordered = new Color(startImage.getRGB(0, 0));
+        Color topRightOrgBordered =  new Color(startImage.getRGB(startImage.getWidth()-1, 0));
+        Color bottomRightOrgBordered =  new Color(startImage.getRGB(0, startImage.getHeight()-1));
+        Color bottomLeftOrgBordered =  new Color(startImage.getRGB(startImage.getWidth()-1, startImage.getHeight()-1));
 
-	        Color white = new Color(255,255,255);
-	        assertEquals(true, topLeftOrgBordered.equals(white));
-	        assertEquals(true, topRightOrgBordered.equals(white));
-	        assertEquals(true, bottomRightOrgBordered.equals(white));
-	        assertEquals(true, bottomLeftOrgBordered.equals(white));
+        Color white = new Color(255,255,255);
+        assertEquals(true, topLeftOrgBordered.equals(white));
+        assertEquals(true, topRightOrgBordered.equals(white));
+        assertEquals(true, bottomRightOrgBordered.equals(white));
+        assertEquals(true, bottomLeftOrgBordered.equals(white));
 
-	        assertEquals(false, topLeftOrgNonBordered.equals(white));
-	        assertEquals(false, topRightOrgNonBordered.equals(white));
-	        assertEquals(false, bottomRightOrgNonBordered.equals(white));
-	        assertEquals(false, bottomLeftOrgNonBordered.equals(white));
+        assertEquals(false, topLeftOrgNonBordered.equals(white));
+        assertEquals(false, topRightOrgNonBordered.equals(white));
+        assertEquals(false, bottomRightOrgNonBordered.equals(white));
+	    assertEquals(false, bottomLeftOrgNonBordered.equals(white));
 
   }
-
+	
+	//testing the resizeImages function by resizing the images and the compringthem to the correct hieght and width
 	@Test
 	public void testResizeImages() {
 		ImageTransform imageTransform = new ImageTransform("test");
@@ -228,6 +236,7 @@ public class ImageTransformTest {
 		}
 	}
 
+	//testing combineImages by combining the images and comfirming that it returns a BufferedImage
 	@Test
 	public void testCombineImages() {
 		ImageTransform imageTransform = new ImageTransform("test");
@@ -246,8 +255,53 @@ public class ImageTransformTest {
 		assertThat(collage, instanceOf(BufferedImage.class));
 	}
 
+	//tests to make sure the image generated is the right image by comparingining it with the correct image's encoded string
+	@Test
+	public void testGenerateInsufficientNumberImage() {
+		ImageTransform it = new ImageTransform("test");
+		CollageHandler ch = new CollageHandler("test");
+		BufferedImage testingBI = it.generateInsufficientNumberImage();
+		String testBase64 = ch.convertBufferedImageToBase64(testingBI);
+		String compareImage = getImageEncodedAsStringFromFile();
+		assertThat(testingBI, instanceOf(BufferedImage.class));
+		assertEquals(compareImage, testBase64);
+	}
+	
+	//tests the getCompletedImage by making sure it returns a the same collage as was created and set in createCollageImage
+	@Test
+	public void testGetCompleteImage() {
+		ImageTransform it = new ImageTransform("test");
+		BufferedImage collage = it.createCollageImage();
+		BufferedImage completeCollage = it.getCompleteImage();
+		assertEquals(completeCollage,collage);
+	}
+	
+	//helper image to cerate a buffered image we can test with 
 	private BufferedImage createFixedSizeBufferedImage() {
 		return new BufferedImage(500, 500, BufferedImage.TYPE_INT_ARGB);
+	}
+	
+	//helper method to test an encoded string against
+	private String getImageEncodedAsStringFromFile() {
+		String line = null;
+		String fullImage = "";
+		try {
+			FileReader fileReader = new FileReader(FILE_NAME);
+			
+			BufferedReader bufferedReader = new BufferedReader(fileReader);
+			
+			while((line = bufferedReader.readLine()) != null) {
+				fullImage += line;
+			}
+			
+			bufferedReader.close();
+		} catch(FileNotFoundException fnfe) {
+			System.out.println("unable to open file");
+			
+		} catch(IOException ioe) {
+			System.out.println("io exception");
+		}
+		return fullImage;
 	}
 
 }

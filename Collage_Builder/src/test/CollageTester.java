@@ -5,6 +5,7 @@ import server.Collage;
 
 public class CollageTester {
 
+	//tests the getter and setter methods of collage class by setting the them and then getting them
 	@Test
 	public void setterAndGetter() {
 		Collage c = new Collage();
