@@ -3,7 +3,6 @@ package server;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.RenderingHints;
@@ -22,7 +21,6 @@ import java.util.Random;
 
 import javax.imageio.IIOException;
 import javax.imageio.ImageIO;
-import javax.swing.ImageIcon;
 
 
 public class ImageTransform {
@@ -62,18 +60,17 @@ public class ImageTransform {
 
 	// retrieves top 30 image search results from Google Custom Search API
 	// see: https://stackoverflow.com/questions/10257276/java-code-for-using-google-custom-search-api
-	private boolean fetchImages() {
+	public boolean fetchImages() {
+		
 		try {
 			// maintain count of number of results fetched from API
 			int resultNum = 0;
 			// initially fetch 40 images in case of bad/undownloadable links
 			for(int i = 0; i < 4; i++) {
-				URL requestURL = generateRequestURL(resultNum);
+				URL requestURL = generateRequestURL(resultNum, "");
 
-				HttpURLConnection connection = (HttpURLConnection) requestURL.openConnection();
-				connection.setRequestMethod("GET");
-				BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-
+				HttpURLConnection connection = getConnectionFromRequestURL(requestURL);
+				BufferedReader reader = generateBufferedReaderFromInputStream(connection);
 				String output;
 
 				// parse through JSON response for image links, line by line
@@ -82,7 +79,7 @@ public class ImageTransform {
 						String link = output.substring(output.indexOf("\"link\": \"") + ("\"link\": \"").length(), output.indexOf("\","));
 						URL imageURL = new URL(link);
 						try {
-							BufferedImage resultImage = (BufferedImage) ImageIO.read(imageURL);
+							BufferedImage resultImage = generateBufferedImageFromURL(imageURL);
 							this.retrievedImages.add(resultImage);
 						} catch(IIOException e) {
 							System.out.println("Bad link/unable to generate buffered image from a url!");
@@ -101,8 +98,27 @@ public class ImageTransform {
 
 		return validateRetrievedImages();
 	}
+	
+	// for testing
+	public HttpURLConnection getConnectionFromRequestURL(URL requestURL) throws IOException {
+		HttpURLConnection connection = (HttpURLConnection) requestURL.openConnection();
+		connection.setRequestMethod("GET");
+		return connection;
+	}
+	
+	// for testing
+	public BufferedReader generateBufferedReaderFromInputStream(HttpURLConnection connection) throws IOException {
+		BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+		return reader;
+	}
+	
+	// for testing
+	public BufferedImage generateBufferedImageFromURL(URL imageURL) throws IOException {
+		BufferedImage resultImage = (BufferedImage) ImageIO.read(imageURL);
+		return resultImage;
+	}
 
-	private boolean validateRetrievedImages() {
+	public boolean validateRetrievedImages() {
 		// verify there are no null images
 		int numImages = this.retrievedImages.size();
 		// remove any null images (links that blocked us)
@@ -132,20 +148,19 @@ public class ImageTransform {
 	}
 
 	// generate url to make request to our Google custom search engine
-	private URL generateRequestURL(int resultNumber) throws MalformedURLException {
-		URL requestURL;
+	public URL generateRequestURL(int resultNumber, String garbageString) throws MalformedURLException{
+		URL requestURL = null;
 		if(resultNumber > 0) {
-			requestURL = new URL("https://www.googleapis.com/customsearch/v1?key=" + GOOGLE_SEARCH_API_KEY + "&cx=" + GOOGLE_CX + "&q=" + this.topic + "&searchType=image&imgType=photo&imgSize=medium&start=" + resultNumber + "&num=10");
+			requestURL = new URL("http" + garbageString + "s://www.googleapis.com/customsearch/v1?key=" + GOOGLE_SEARCH_API_KEY + "&cx=" + GOOGLE_CX + "&q=" + this.topic + "&searchType=image&imgType=photo&imgSize=medium&start=" + resultNumber + "&num=10");
 		}
 		else {
-			requestURL = new URL("https://www.googleapis.com/customsearch/v1?key=" + GOOGLE_SEARCH_API_KEY + "&cx=" + GOOGLE_CX + "&q=" + topic + "&searchType=image&imgType=photo&imgSize=medium&num=10");
+			requestURL = new URL("http" + garbageString + "s://www.googleapis.com/customsearch/v1?key=" + GOOGLE_SEARCH_API_KEY + "&cx=" + GOOGLE_CX + "&q=" + topic + "&searchType=image&imgType=photo&imgSize=medium&num=10");
 		}
-
 		return requestURL;
 	}
 
 	// scaling each image to roughly 1/20th of COLLAGE_SIZE, see: https://stackoverflow.com/questions/9417356/bufferedimage-resize
-	private void resizeImages() {
+	public void resizeImages() {
 		int numImages = this.retrievedImages.size();
 		for(int i = 0; i < numImages; i++) {
 			BufferedImage originalImage = this.retrievedImages.get(0);
@@ -156,10 +171,6 @@ public class ImageTransform {
 			int originalImageSize = originalWidth * originalHeight;
 			// determines scale factor such that the average sizes of the images is 1/20th of COLLAGE_SIZE
 			double scaleFactor = originalImageSize/FINAL_FOREGROUND_IMAGE_SIZE;
-
-			if(scaleFactor == 0) {
-				scaleFactor = 1;
-			}
 
 			scaleFactor = Math.sqrt(scaleFactor);
 
@@ -180,7 +191,7 @@ public class ImageTransform {
 
 	// generate random rotation amount for an image in radians within IMAGE_ROTATION_LIMIT
 	// where -45 degrees <= IMAGE_ROTATION_LIMIT <= 45 degrees
-	private int generateRotationAmount() {
+	public int generateRotationAmount() {
 		Random rand = new Random();
 		int angle = rand.nextInt(46);
 
@@ -193,7 +204,7 @@ public class ImageTransform {
 
 	// adds 3px white frame around each image
 	// see: https://stackoverflow.com/questions/4219511/draw-rectangle-border-thickness
-	private void borderImage(BufferedImage image) {
+	public void borderImage(BufferedImage image) {
 			Graphics2D g2d = image.createGraphics();
 			int height = image.getHeight();
 			int width = image.getWidth();
@@ -211,7 +222,7 @@ public class ImageTransform {
 	}
 
 	// generates collage from the retrieved bufferedImages
-	private BufferedImage combineImages() {
+	public BufferedImage combineImages() {
 		BufferedImage collageImage = new BufferedImage(COLLAGE_WIDTH, COLLAGE_HEIGHT, BufferedImage.TYPE_INT_ARGB);
 		Graphics2D g = (Graphics2D) collageImage.getGraphics();
 		int x = 0;
@@ -242,7 +253,6 @@ public class ImageTransform {
 				// randomly generates the location of the next image on the collage within the bounds of the collage
 				x = rand.nextInt(COLLAGE_WIDTH-600)+300;
 				y = rand.nextInt(COLLAGE_HEIGHT-500)+200;
-				System.out.println("x,y="+x+","+y);
 				g.drawImage(image, null,x, y);
 				g.setTransform(backup);
 			}
@@ -259,7 +269,7 @@ public class ImageTransform {
 	}
 
 	// generates the buffered image that is exported when there is an insufficient number of images found
-	private BufferedImage generateInsufficientNumberImage() {
+	public BufferedImage generateInsufficientNumberImage() {
 		BufferedImage insufficentNumberImage = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
         Graphics2D imageGraphicsManipulator = insufficentNumberImage.createGraphics();
 				// setting font size to 18
@@ -292,6 +302,10 @@ public class ImageTransform {
 		// accessor method to return the retrieved images from Google/modified images at any point
 	public List<BufferedImage> getRetrievedImages() {
 		return this.retrievedImages;
+	}
+	
+	public void setRetrievedImages(List<BufferedImage> images){
+		this.retrievedImages = images;
 	}
 
 	// accessor method to return the complete collage image as a buffered image
