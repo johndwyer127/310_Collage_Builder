@@ -151,7 +151,7 @@ public class ImageTransformTest {
 
 	@Test
 	public void testCombineImages() {
-		ImageTransform imageTransform = new ImageTransform();
+		ImageTransform imageTransform = new ImageTransform("test");
 		
 		List<BufferedImage> testImages = new ArrayList<BufferedImage>();
 		
