@@ -19,7 +19,7 @@ import server.MainController;
 public class MainControllerTest {
     
 	@Test
-    public void testDoGet() {
+    public void testDoGet() { 
         HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
         HttpServletResponse response = Mockito.mock(HttpServletResponse.class);
         HttpSession session = Mockito.mock(HttpSession.class);
